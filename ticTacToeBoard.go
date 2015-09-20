@@ -31,3 +31,8 @@ func (board *TicTacToeBoard) PutNought(position Position) BoardSnapshot {
 	board.snapshot[position.X][position.Y] = NOUGHT
 	return board.snapshot
 }
+
+func (board *TicTacToeBoard) PutCross(position Position) BoardSnapshot {
+	board.snapshot[position.X][position.Y] = CROSS
+	return board.snapshot
+}

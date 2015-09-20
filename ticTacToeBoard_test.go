@@ -27,5 +27,12 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 				Expect(boardSnapshot[irrelevantPosition.X][irrelevantPosition.Y]).To(Equal(NOUGHT))
 			})
 		})
+		Context("when adding a cross", func() {
+			It("fills board position with a cross token", func() {
+				boardSnapshot := board.PutCross(irrelevantPosition)
+
+				Expect(boardSnapshot[irrelevantPosition.X][irrelevantPosition.Y]).To(Equal(CROSS))
+			})
+		})
 	})
 })
