@@ -28,8 +28,8 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 			})
 			Context("when the board place is already filled", func() {
 				It("returns an error", func() {
-					board.PutCross(irrelevantPosition)
-					_, err := board.PutCross(irrelevantPosition)
+					board.PutNought(irrelevantPosition)
+					_, err := board.PutNought(irrelevantPosition)
 
 					Expect(err).NotTo(Equal(nil))
 				})
@@ -40,6 +40,14 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 				boardSnapshot, _ := board.PutCross(irrelevantPosition)
 
 				Expect(boardSnapshot[irrelevantPosition.X][irrelevantPosition.Y]).To(Equal(CROSS))
+			})
+			Context("when the board place is already filled", func() {
+				It("returns an error", func() {
+					board.PutCross(irrelevantPosition)
+					_, err := board.PutCross(irrelevantPosition)
+
+					Expect(err).NotTo(Equal(nil))
+				})
 			})
 		})
 	})

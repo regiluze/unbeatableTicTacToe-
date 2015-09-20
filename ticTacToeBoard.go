@@ -29,14 +29,21 @@ func NewTicTacToeBoard() *TicTacToeBoard {
 }
 
 func (board *TicTacToeBoard) PutNought(position Position) (BoardSnapshot, error) {
-	board.snapshot[position.X][position.Y] = NOUGHT
-	return board.snapshot, nil
+	return board.putToken(NOUGHT, position)
 }
 
 func (board *TicTacToeBoard) PutCross(position Position) (BoardSnapshot, error) {
-	if len(board.snapshot[position.X][position.Y]) > 0 {
+	return board.putToken(CROSS, position)
+}
+
+func (board *TicTacToeBoard) putToken(token string, position Position) (BoardSnapshot, error) {
+	if board.placeIsFilled(position) {
 		return BoardSnapshot{}, errors.New("Place already filled")
 	}
-	board.snapshot[position.X][position.Y] = CROSS
+	board.snapshot[position.X][position.Y] = token
 	return board.snapshot, nil
+}
+
+func (board *TicTacToeBoard) placeIsFilled(position Position) bool {
+	return len(board.snapshot[position.X][position.Y]) > 0
 }
