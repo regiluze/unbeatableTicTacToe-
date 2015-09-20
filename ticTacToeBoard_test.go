@@ -1,6 +1,7 @@
 package main_test
 
 import (
+	_ "fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/regiluze/unbeatableTicTacToe-"
@@ -24,14 +25,14 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 			It("fills board position with a nought token", func() {
 				boardSnapshot, _ := board.PutNought(irrelevantPosition)
 
-				Expect(boardSnapshot[irrelevantPosition.X][irrelevantPosition.Y]).To(Equal(NOUGHT))
+				Expect(boardSnapshot[irrelevantPosition.X][irrelevantPosition.Y]).Should(Equal(NOUGHT))
 			})
 			Context("when the board place is already filled", func() {
 				It("returns an error", func() {
 					board.PutNought(irrelevantPosition)
 					_, err := board.PutNought(irrelevantPosition)
 
-					Expect(err).NotTo(Equal(nil))
+					Expect(err).ShouldNot(BeNil())
 				})
 			})
 		})
@@ -46,9 +47,19 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 					board.PutCross(irrelevantPosition)
 					_, err := board.PutCross(irrelevantPosition)
 
-					Expect(err).NotTo(Equal(nil))
+					Expect(err).ShouldNot(Equal(nil))
 				})
 			})
+		})
+	})
+	Context("when reset the board", func() {
+		It("cleans all tokens from the board", func() {
+			board.PutNought(irrelevantPosition)
+
+			board.Reset()
+
+			_, err := board.PutNought(irrelevantPosition)
+			Expect(err).Should(BeNil())
 		})
 	})
 })

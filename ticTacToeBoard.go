@@ -36,6 +36,14 @@ func (board *TicTacToeBoard) PutCross(position Position) (BoardSnapshot, error) 
 	return board.putToken(CROSS, position)
 }
 
+func (board *TicTacToeBoard) Reset() {
+	for row := 0; row < 3; row++ {
+		for col := 0; col < 3; col++ {
+			board.snapshot[row][col] = ""
+		}
+	}
+}
+
 func (board *TicTacToeBoard) putToken(token string, position Position) (BoardSnapshot, error) {
 	if board.placeIsFilled(position) {
 		return BoardSnapshot{}, errors.New("Place already filled")
