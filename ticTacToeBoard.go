@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	_ "fmt"
 )
 
@@ -27,12 +28,15 @@ func NewTicTacToeBoard() *TicTacToeBoard {
 
 }
 
-func (board *TicTacToeBoard) PutNought(position Position) BoardSnapshot {
+func (board *TicTacToeBoard) PutNought(position Position) (BoardSnapshot, error) {
 	board.snapshot[position.X][position.Y] = NOUGHT
-	return board.snapshot
+	return board.snapshot, nil
 }
 
-func (board *TicTacToeBoard) PutCross(position Position) BoardSnapshot {
+func (board *TicTacToeBoard) PutCross(position Position) (BoardSnapshot, error) {
+	if len(board.snapshot[position.X][position.Y]) > 0 {
+		return BoardSnapshot{}, errors.New("Place already filled")
+	}
 	board.snapshot[position.X][position.Y] = CROSS
-	return board.snapshot
+	return board.snapshot, nil
 }

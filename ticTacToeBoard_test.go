@@ -22,14 +22,22 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 	Describe("Filling the board with tokens", func() {
 		Context("when adding a nought", func() {
 			It("fills board position with a nought token", func() {
-				boardSnapshot := board.PutNought(irrelevantPosition)
+				boardSnapshot, _ := board.PutNought(irrelevantPosition)
 
 				Expect(boardSnapshot[irrelevantPosition.X][irrelevantPosition.Y]).To(Equal(NOUGHT))
+			})
+			Context("when the board place is already filled", func() {
+				It("returns an error", func() {
+					board.PutCross(irrelevantPosition)
+					_, err := board.PutCross(irrelevantPosition)
+
+					Expect(err).NotTo(Equal(nil))
+				})
 			})
 		})
 		Context("when adding a cross", func() {
 			It("fills board position with a cross token", func() {
-				boardSnapshot := board.PutCross(irrelevantPosition)
+				boardSnapshot, _ := board.PutCross(irrelevantPosition)
 
 				Expect(boardSnapshot[irrelevantPosition.X][irrelevantPosition.Y]).To(Equal(CROSS))
 			})
