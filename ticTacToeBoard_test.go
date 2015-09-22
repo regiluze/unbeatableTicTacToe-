@@ -1,7 +1,7 @@
 package main_test
 
 import (
-	_ "fmt"
+	"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/regiluze/unbeatableTicTacToe-"
@@ -62,4 +62,39 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 			Expect(err).Should(BeNil())
 		})
 	})
+	Describe("the game is over", func() {
+		Context("when the board is completly full and call isOver method", func() {
+			It("returns true and empty string", func() {
+
+				fillTheBoard(board)
+
+				result, winner := board.IsOver()
+
+				Expect(result).Should(BeTrue())
+				Expect(winner).Should(BeEmpty())
+
+			})
+		})
+	})
 })
+
+func fillTheBoard(board *TicTacToeBoard) {
+	token := CROSS
+	var snapshot BoardSnapshot
+	for row := 0; row < 3; row++ {
+		if row == 1 {
+			token = CROSS
+		}
+		for col := 0; col < 3; col++ {
+			if token == CROSS {
+				snapshot, _ = board.PutNought(Position{row, col})
+				token = NOUGHT
+			} else {
+				snapshot, _ = board.PutCross(Position{row, col})
+				token = CROSS
+			}
+		}
+	}
+	fmt.Printf("%q", snapshot)
+
+}
