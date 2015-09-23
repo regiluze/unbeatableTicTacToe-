@@ -132,6 +132,36 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 				})
 			})
 		})
+		Context("when three cross tokens are in column line", func() {
+			Context("when there are the same token  on the first column", func() {
+				It("returns true and a cross", func() {
+
+					board.PutCross(Position{0, 0})
+					board.PutCross(Position{1, 0})
+					board.PutCross(Position{2, 0})
+
+					result, winner := board.IsOver()
+
+					Expect(result).Should(BeTrue())
+					Expect(winner).Should(Equal(CROSS))
+
+				})
+			})
+			Context("when there are the same token  on the second column", func() {
+				It("returns true and a cross", func() {
+
+					board.PutNought(Position{0, 1})
+					board.PutNought(Position{1, 1})
+					board.PutNought(Position{2, 1})
+
+					result, winner := board.IsOver()
+
+					Expect(result).Should(BeTrue())
+					Expect(winner).Should(Equal(NOUGHT))
+
+				})
+			})
+		})
 	})
 })
 

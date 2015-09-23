@@ -70,9 +70,18 @@ func (board *TicTacToeBoard) putToken(token string, position Position) (BoardSna
 }
 
 func (board *TicTacToeBoard) checkWinner() string {
-	for line := 0; line < 4; line++ {
+	for line := 0; line < 3; line++ {
 		if token := board.threeInLine(board.snapshot[line]); token != "" {
 			return token
+		}
+	}
+
+	for column := 0; column < 3; column++ {
+		for line := 0; line < 3; line++ {
+			tokensLine := [3]string{board.snapshot[column][line], board.snapshot[column][line], board.snapshot[column][line]}
+			if token := board.threeInLine(tokensLine); token != "" {
+				return token
+			}
 		}
 	}
 
