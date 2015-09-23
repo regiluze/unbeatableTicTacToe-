@@ -21,6 +21,7 @@ type Position struct {
 type TicTacToeBoard struct {
 	snapshot       BoardSnapshot
 	numberOfTokens int
+	winner         string
 }
 
 func NewTicTacToeBoard() *TicTacToeBoard {
@@ -41,6 +42,7 @@ func (board *TicTacToeBoard) PutCross(position Position) (BoardSnapshot, error) 
 
 func (board *TicTacToeBoard) Reset() {
 	board.numberOfTokens = 0
+	board.winner = ""
 	for row := 0; row < 3; row++ {
 		for col := 0; col < 3; col++ {
 			board.snapshot[row][col] = ""
@@ -52,6 +54,9 @@ func (board *TicTacToeBoard) IsOver() (bool, string) {
 	if board.numberOfTokens == TOKENS_ON_BOARD {
 		return true, ""
 	}
+	if winner := board.checkWinner(); winner != "" {
+		return true, winner
+	}
 	return false, ""
 }
 
@@ -62,6 +67,24 @@ func (board *TicTacToeBoard) putToken(token string, position Position) (BoardSna
 	board.snapshot[position.X][position.Y] = token
 	board.numberOfTokens += 1
 	return board.snapshot, nil
+}
+
+func (board *TicTacToeBoard) checkWinner() string {
+	for line := 0; line < 4; line++ {
+		if token := board.threeInLine(board.snapshot[line]); token != "" {
+			return token
+		}
+	}
+
+	return ""
+}
+
+func (board *TicTacToeBoard) threeInLine(line [3]string) string {
+	token := line[0]
+	if token != "" && line[1] == token && line[2] == token {
+		return token
+	}
+	return ""
 }
 
 func (board *TicTacToeBoard) placeIsFilled(position Position) bool {

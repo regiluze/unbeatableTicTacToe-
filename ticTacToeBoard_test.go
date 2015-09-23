@@ -75,6 +75,63 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 
 			})
 		})
+
+		Context("when three cross tokens  are in line", func() {
+			Context("when there are the same token  on the first line", func() {
+				It("returns true and a cross", func() {
+
+					board.PutCross(Position{0, 0})
+					board.PutCross(Position{0, 1})
+					board.PutCross(Position{0, 2})
+
+					result, winner := board.IsOver()
+
+					Expect(result).Should(BeTrue())
+					Expect(winner).Should(Equal(CROSS))
+
+				})
+				It("returns true and a cross", func() {
+
+					board.PutNought(Position{0, 0})
+					board.PutNought(Position{0, 1})
+					board.PutNought(Position{0, 2})
+
+					result, winner := board.IsOver()
+
+					Expect(result).Should(BeTrue())
+					Expect(winner).Should(Equal(NOUGHT))
+
+				})
+			})
+			Context("when there are the same token on the second line", func() {
+				It("returns true and a cross", func() {
+
+					board.PutCross(Position{1, 0})
+					board.PutCross(Position{1, 1})
+					board.PutCross(Position{1, 2})
+
+					result, winner := board.IsOver()
+
+					Expect(result).Should(BeTrue())
+					Expect(winner).Should(Equal(CROSS))
+
+				})
+			})
+			Context("when there are the same token on the third line", func() {
+				It("returns true and a hought", func() {
+
+					board.PutNought(Position{2, 0})
+					board.PutNought(Position{2, 1})
+					board.PutNought(Position{2, 2})
+
+					result, winner := board.IsOver()
+
+					Expect(result).Should(BeTrue())
+					Expect(winner).Should(Equal(NOUGHT))
+
+				})
+			})
+		})
 	})
 })
 
