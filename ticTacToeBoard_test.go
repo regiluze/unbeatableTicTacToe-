@@ -77,7 +77,7 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 		})
 
 		Context("when the same type three tokens are in line", func() {
-			Context("when there are three crosses on the first line", func() {
+			Context("when three crosses are on the first line", func() {
 				It("returns true and a cross", func() {
 
 					board.PutCross(Position{0, 0})
@@ -90,20 +90,8 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 					Expect(winner).Should(Equal(CROSS))
 
 				})
-				It("returns true and a cross", func() {
-
-					board.PutNought(Position{0, 0})
-					board.PutNought(Position{0, 1})
-					board.PutNought(Position{0, 2})
-
-					result, winner := board.IsOver()
-
-					Expect(result).Should(BeTrue())
-					Expect(winner).Should(Equal(NOUGHT))
-
-				})
 			})
-			Context("when there are the same token on the second line", func() {
+			Context("when there three crosses are on the second line", func() {
 				It("returns true and a cross", func() {
 
 					board.PutCross(Position{1, 0})
@@ -117,7 +105,7 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 
 				})
 			})
-			Context("when there are the same token on the third line", func() {
+			Context("when three noughts are on the third line", func() {
 				It("returns true and a hought", func() {
 
 					board.PutNought(Position{2, 0})
@@ -132,8 +120,8 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 				})
 			})
 		})
-		Context("when three are three cross tokens in column line", func() {
-			Context("when there are on the first column", func() {
+		Context("when the same type three tokens are on column line", func() {
+			Context("when three crosses are on the first column", func() {
 				It("returns true and a cross", func() {
 
 					board.PutCross(Position{0, 0})
@@ -147,7 +135,7 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 
 				})
 			})
-			Context("when there are the same token on the second column", func() {
+			Context("when three croosses are on the second column", func() {
 				It("returns true and a cross", func() {
 
 					board.PutCross(Position{0, 1})
@@ -162,8 +150,8 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 				})
 			})
 		})
-		Context("when three nought tokens are on cross line", func() {
-			Context("when there are on first cross", func() {
+		Context("when the same type three tokens  are on cross lines", func() {
+			Context("when three noughts are on first cross", func() {
 				It("returns true and a nought", func() {
 
 					board.PutNought(Position{0, 0})
@@ -177,17 +165,17 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 
 				})
 			})
-			Context("when there are on second cross", func() {
+			Context("when three crosses are on second cross", func() {
 				It("returns true and a nought", func() {
 
-					board.PutNought(Position{0, 2})
-					board.PutNought(Position{1, 1})
-					board.PutNought(Position{2, 0})
+					board.PutCross(Position{0, 2})
+					board.PutCross(Position{1, 1})
+					board.PutCross(Position{2, 0})
 
 					result, winner := board.IsOver()
 
 					Expect(result).Should(BeTrue())
-					Expect(winner).Should(Equal(NOUGHT))
+					Expect(winner).Should(Equal(CROSS))
 
 				})
 			})
