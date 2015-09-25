@@ -21,7 +21,6 @@ type Position struct {
 type TicTacToeBoard struct {
 	snapshot       BoardSnapshot
 	numberOfTokens int
-	winner         string
 }
 
 func NewTicTacToeBoard() *TicTacToeBoard {
@@ -42,7 +41,6 @@ func (board *TicTacToeBoard) PutCross(position Position) (BoardSnapshot, error) 
 
 func (board *TicTacToeBoard) Reset() {
 	board.numberOfTokens = 0
-	board.winner = ""
 	for row := 0; row < 3; row++ {
 		for col := 0; col < 3; col++ {
 			board.snapshot[row][col] = ""
@@ -54,8 +52,8 @@ func (board *TicTacToeBoard) IsOver() (bool, string) {
 	if board.numberOfTokens == TOKENS_ON_BOARD {
 		return true, ""
 	}
-	if winner := board.checkWinner(); winner != "" {
-		return true, winner
+	if tokenInLine := board.checkThreeInLine(); tokenInLine != "" {
+		return true, tokenInLine
 	}
 	return false, ""
 }
@@ -69,23 +67,50 @@ func (board *TicTacToeBoard) putToken(token string, position Position) (BoardSna
 	return board.snapshot, nil
 }
 
-func (board *TicTacToeBoard) checkWinner() string {
-	for line := 0; line < 3; line++ {
-		if token := board.threeInLine(board.snapshot[line]); token != "" {
-			return token
-		}
-	}
+func (board *TicTacToeBoard) checkThreeInLine() string {
 
-	for column := 0; column < 3; column++ {
-		for line := 0; line < 3; line++ {
-			tokensLine := [3]string{board.snapshot[column][line], board.snapshot[column][line], board.snapshot[column][line]}
-			if token := board.threeInLine(tokensLine); token != "" {
-				return token
-			}
-		}
+	if winner, match := board.winnerHorizontally(); match {
+		return winner
+	}
+	if winnerToken, match := board.winnerVertically(); match {
+		return winnerToken
+	}
+	if winnerToken, match := board.winnerOnCrosses(); match {
+		return winnerToken
 	}
 
 	return ""
+}
+
+func (board *TicTacToeBoard) winnerOnCrosses() (string, bool) {
+	cross := [3]string{board.snapshot[0][0], board.snapshot[1][1], board.snapshot[2][2]}
+	if token := board.threeInLine(cross); token != "" {
+		return token, true
+	}
+	cross = [3]string{board.snapshot[0][2], board.snapshot[1][1], board.snapshot[2][0]}
+	if token := board.threeInLine(cross); token != "" {
+		return token, true
+	}
+	return "", false
+}
+
+func (board *TicTacToeBoard) winnerHorizontally() (string, bool) {
+	for line := 0; line < 3; line++ {
+		if token := board.threeInLine(board.snapshot[line]); token != "" {
+			return token, true
+		}
+	}
+	return "", false
+}
+
+func (board *TicTacToeBoard) winnerVertically() (string, bool) {
+	for column := 0; column < 3; column++ {
+		tokensLine := [3]string{board.snapshot[0][column], board.snapshot[1][column], board.snapshot[2][column]}
+		if token := board.threeInLine(tokensLine); token != "" {
+			return token, true
+		}
+	}
+	return "", false
 }
 
 func (board *TicTacToeBoard) threeInLine(line [3]string) string {
