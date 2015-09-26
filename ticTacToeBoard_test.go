@@ -17,7 +17,7 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 
 	BeforeEach(func() {
 		board = NewTicTacToeBoard()
-		irrelevantPosition = Position{X: 0, Y: 0}
+		irrelevantPosition = Position{Col: 0, Line: 0}
 	})
 
 	Describe("Filling the board with tokens", func() {
@@ -25,7 +25,7 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 			It("fills board position with a nought token", func() {
 				boardSnapshot, _ := board.PutNought(irrelevantPosition)
 
-				Expect(boardSnapshot[irrelevantPosition.X][irrelevantPosition.Y]).Should(Equal(NOUGHT))
+				Expect(boardSnapshot[irrelevantPosition.Col][irrelevantPosition.Line]).Should(Equal(NOUGHT))
 			})
 			Context("when the board place is already filled", func() {
 				It("returns an error", func() {
@@ -40,7 +40,7 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 			It("fills board position with a cross token", func() {
 				boardSnapshot, _ := board.PutCross(irrelevantPosition)
 
-				Expect(boardSnapshot[irrelevantPosition.X][irrelevantPosition.Y]).To(Equal(CROSS))
+				Expect(boardSnapshot[irrelevantPosition.Col][irrelevantPosition.Line]).To(Equal(CROSS))
 			})
 			Context("when the board place is already filled", func() {
 				It("returns an error", func() {
@@ -91,7 +91,7 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 
 				})
 			})
-			Context("when there three crosses are on the second line", func() {
+			Context("when three crosses are on the second line", func() {
 				It("returns true and a cross", func() {
 
 					board.PutCross(Position{1, 0})
