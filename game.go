@@ -21,7 +21,7 @@ func NewTicTacToeGame(player1 Player, player2 Player) TicTacToeGame {
 	board := NewTicTacToeBoard()
 	winnerMap := map[string]string{
 		CROSS:  "player 1",
-		NOUGHT: "plater 2",
+		NOUGHT: "player 2",
 		"":     "Draw",
 	}
 	game := TicTacToeGame{player1, player2, board, winnerMap}
