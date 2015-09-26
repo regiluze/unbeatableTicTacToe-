@@ -31,10 +31,9 @@ func NewTicTacToeGame(player1 Player, player2 Player) TicTacToeGame {
 
 func (game TicTacToeGame) Start() string {
 	var board BoardSnapshot
-	var err error
 	for {
 		player1Turn := game.player1.PutToken(board)
-		board, err = game.board.PutCross(player1Turn)
+		board, _ = game.board.PutCross(player1Turn)
 		player2Turn := game.player2.PutToken(board)
 		board, _ = game.board.PutNought(player2Turn)
 		if isOver, winner := game.board.IsOver(); isOver {

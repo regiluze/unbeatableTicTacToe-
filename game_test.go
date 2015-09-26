@@ -53,7 +53,7 @@ var _ = Describe("Tic Tac Toe game specs", func() {
 
 	Describe("When the game starts", func() {
 		Context("the player1 puts 3 croosses on first line", func() {
-			FIt("returns player1 as winner", func() {
+			It("returns player1 as winner", func() {
 				winnerPlayer = &FirstLineFillerPlayer{}
 				game = NewTicTacToeGame(winnerPlayer, looserPlayer)
 				winner := game.Start()
