@@ -35,12 +35,12 @@ type FirstLineFillerPlayer struct {
 	turn int
 }
 
-func (looser *FirstLineFillerPlayer) PutToken(board BoardSnapshot) Position {
-	looser.turn += 1
-	if looser.turn == 2 {
+func (winner *FirstLineFillerPlayer) PutToken(board BoardSnapshot) Position {
+	winner.turn += 1
+	if winner.turn == 2 {
 		return Position{1, 0}
 	}
-	if looser.turn == 3 {
+	if winner.turn == 3 {
 		return Position{2, 0}
 	}
 	return Position{0, 0}
@@ -62,6 +62,25 @@ func (looser *AnotherLooserPlayer) PutToken(board BoardSnapshot) Position {
 		return Position{2, 1}
 	}
 	return Position{1, 2}
+}
+
+type ClumsyWinnerPlayer struct {
+	turn int
+}
+
+func (winner *ClumsyWinnerPlayer) PutToken(board BoardSnapshot) Position {
+	winner.turn += 1
+	if winner.turn == 2 {
+		return Position{0, 1}
+	}
+	if winner.turn == 3 {
+		return Position{1, 1}
+	}
+	if winner.turn == 4 {
+		return Position{2, 1}
+	}
+	return Position{0, 1}
+
 }
 
 var _ = Describe("Tic Tac Toe game specs", func() {
@@ -93,6 +112,28 @@ var _ = Describe("Tic Tac Toe game specs", func() {
 				winner := game.Start()
 
 				Expect(winner).Should(Equal("Draw"))
+
+			})
+		})
+		Context("when a clumsy player 1 put a token on alredy filled place", func() {
+			It("retries the turn and then wins", func() {
+				clumsyWinnerPlayer := &ClumsyWinnerPlayer{}
+				winnerPlayer = &FirstLineFillerPlayer{}
+				game = NewTicTacToeGame(clumsyWinnerPlayer, winnerPlayer)
+				winner := game.Start()
+
+				Expect(winner).Should(Equal("player 1"))
+
+			})
+		})
+		Context("when a clumsy player 2 put a token on alredy filled place", func() {
+			It("retries the turn and then wins", func() {
+				clumsyWinnerPlayer := &ClumsyWinnerPlayer{}
+				winnerPlayer = &FirstLineFillerPlayer{}
+				game = NewTicTacToeGame(winnerPlayer, clumsyWinnerPlayer)
+				winner := game.Start()
+
+				Expect(winner).Should(Equal("player 1"))
 
 			})
 		})

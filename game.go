@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
+	_ "fmt"
 )
+
+type putToken func(Position) (BoardSnapshot, error)
 
 type Player interface {
 	PutToken(BoardSnapshot) Position
 }
-
-const ()
 
 type TicTacToeGame struct {
 	player1   Player
@@ -32,16 +32,23 @@ func NewTicTacToeGame(player1 Player, player2 Player) TicTacToeGame {
 func (game TicTacToeGame) Start() string {
 	var board BoardSnapshot
 	for {
-		player1Turn := game.player1.PutToken(board)
-		board, _ = game.board.PutCross(player1Turn)
-		player2Turn := game.player2.PutToken(board)
-		board, _ = game.board.PutNought(player2Turn)
+		board = game.safeTokePut(game.board.PutCross, game.player1, board)
 		if isOver, winner := game.board.IsOver(); isOver {
-			fmt.Println("EGI >>> winner", winner)
+			return game.winnerMap[winner]
+		}
+		board = game.safeTokePut(game.board.PutNought, game.player2, board)
+		if isOver, winner := game.board.IsOver(); isOver {
 			return game.winnerMap[winner]
 		}
 	}
-
 	return ""
+}
 
+func (game TicTacToeGame) safeTokePut(putFunction putToken, player Player, board BoardSnapshot) BoardSnapshot {
+	position := player.PutToken(board)
+	board, err := putFunction(position)
+	if err != nil {
+		game.safeTokePut(putFunction, player, board)
+	}
+	return board
 }
