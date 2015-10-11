@@ -30,25 +30,29 @@ func NewTicTacToeGame(player1 Player, player2 Player) TicTacToeGame {
 }
 
 func (game TicTacToeGame) Start() string {
-	var board BoardSnapshot
-	for {
-		board = game.safeTokePut(game.board.PutCross, game.player1, board)
-		if isOver, winner := game.board.IsOver(); isOver {
-			return game.winnerMap[winner]
-		}
-		board = game.safeTokePut(game.board.PutNought, game.player2, board)
-		if isOver, winner := game.board.IsOver(); isOver {
-			return game.winnerMap[winner]
-		}
-	}
-	return ""
+	gameResult := game.run()
+	return game.winnerMap[gameResult]
 }
 
-func (game TicTacToeGame) safeTokePut(putFunction putToken, player Player, board BoardSnapshot) BoardSnapshot {
-	position := player.PutToken(board)
-	board, err := putFunction(position)
-	if err != nil {
-		game.safeTokePut(putFunction, player, board)
+func (game TicTacToeGame) run() string {
+	var gameSnapshot BoardSnapshot
+	for {
+		gameSnapshot = game.safeTokePut(game.board.PutCross, game.player1, gameSnapshot)
+		if isOver, winner := game.board.IsOver(); isOver {
+			return winner
+		}
+		gameSnapshot = game.safeTokePut(game.board.PutNought, game.player2, gameSnapshot)
+		if isOver, winner := game.board.IsOver(); isOver {
+			return winner
+		}
 	}
-	return board
+}
+
+func (game TicTacToeGame) safeTokePut(putFunction putToken, player Player, gameSnapshot BoardSnapshot) BoardSnapshot {
+	position := player.PutToken(gameSnapshot)
+	gameSnapshot, err := putFunction(position)
+	if err != nil {
+		game.safeTokePut(putFunction, player, gameSnapshot)
+	}
+	return gameSnapshot
 }
