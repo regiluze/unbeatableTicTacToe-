@@ -76,4 +76,18 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 			})
 		})
 	})
+	Describe("when the player is trying to avoid the choice of win the game to the other player", func() {
+		Context("when two crosses are on the first line", func() {
+			It("puts a nought on the first line free space", func() {
+				snapshot := [3][3]string{}
+				snapshot[0][0] = CROSS
+				snapshot[0][1] = CROSS
+
+				position := player.PutToken(snapshot)
+
+				Expect(position).Should(Equal(Position{0, 2}))
+
+			})
+		})
+	})
 })

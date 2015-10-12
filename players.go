@@ -4,7 +4,7 @@ import (
 	_ "fmt"
 )
 
-type WinnerCheckFunc func(snapshot BoardSnapshot) (bool, Position)
+type RuleCheckFunc func(snapshot BoardSnapshot) (bool, Position)
 
 type UnbeatablePlayer struct {
 	tokenType string
@@ -26,8 +26,10 @@ func (player UnbeatablePlayer) PutToken(snapshot BoardSnapshot) Position {
 }
 
 func (player UnbeatablePlayer) matchWinnerPut(snapshot BoardSnapshot) (bool, Position) {
-	winnerCheckFuncs := []WinnerCheckFunc{player.checkLines, player.checkColumns, player.checkFirstCrossLine, player.checkSecondCrossLine}
-	for _, checkFunc := range winnerCheckFuncs {
+	winnerCheckFuncs := []RuleCheckFunc{player.checkLines, player.checkColumns, player.checkFirstCrossLine, player.checkSecondCrossLine}
+	safeCheckFuncs := []RuleCheckFunc{player.checkSaveLines}
+	rules := append(winnerCheckFuncs, safeCheckFuncs...)
+	for _, checkFunc := range rules {
 		if match, position := checkFunc(snapshot); match {
 			return true, position
 		}
@@ -38,7 +40,16 @@ func (player UnbeatablePlayer) matchWinnerPut(snapshot BoardSnapshot) (bool, Pos
 
 func (player UnbeatablePlayer) checkLines(snapshot BoardSnapshot) (bool, Position) {
 	for column, line := range snapshot {
-		if match, position := player.checkLineToWin(line); match {
+		if match, position := player.checkLineToMatch(line, player.sameTokenType); match {
+			return true, Position{column, position}
+		}
+	}
+	return false, Position{}
+}
+
+func (player UnbeatablePlayer) checkSaveLines(snapshot BoardSnapshot) (bool, Position) {
+	for column, line := range snapshot {
+		if match, position := player.checkLineToMatch(line, player.differentTokenType); match {
 			return true, Position{column, position}
 		}
 	}
@@ -48,7 +59,7 @@ func (player UnbeatablePlayer) checkLines(snapshot BoardSnapshot) (bool, Positio
 func (player UnbeatablePlayer) checkColumns(snapshot BoardSnapshot) (bool, Position) {
 	for column, _ := range snapshot {
 		columnLine := [3]string{snapshot[0][column], snapshot[1][column], snapshot[2][column]}
-		if match, position := player.checkLineToWin(columnLine); match {
+		if match, position := player.checkLineToMatch(columnLine, player.sameTokenType); match {
 			return true, Position{position, column}
 		}
 	}
@@ -57,7 +68,7 @@ func (player UnbeatablePlayer) checkColumns(snapshot BoardSnapshot) (bool, Posit
 
 func (player UnbeatablePlayer) checkFirstCrossLine(snapshot BoardSnapshot) (bool, Position) {
 	crossLine := [3]string{snapshot[0][0], snapshot[1][1], snapshot[2][2]}
-	if match, position := player.checkLineToWin(crossLine); match {
+	if match, position := player.checkLineToMatch(crossLine, player.sameTokenType); match {
 		return true, Position{position, position}
 	}
 	return false, Position{}
@@ -65,24 +76,44 @@ func (player UnbeatablePlayer) checkFirstCrossLine(snapshot BoardSnapshot) (bool
 
 func (player UnbeatablePlayer) checkSecondCrossLine(snapshot BoardSnapshot) (bool, Position) {
 	crossLine := [3]string{snapshot[0][2], snapshot[1][1], snapshot[2][0]}
-	if match, position := player.checkLineToWin(crossLine); match {
+	if match, position := player.checkLineToMatch(crossLine, player.sameTokenType); match {
 		return true, Position{position, 2 - position}
 	}
 	return false, Position{}
 }
 
-func (u UnbeatablePlayer) checkLineToWin(line [3]string) (bool, int) {
+func (player UnbeatablePlayer) checkLineToMatch(line [3]string, matchFunc func(string) bool) (bool, int) {
+	if player.filter(line, matchFunc) == 2 {
+		position := player.getEmtySpacePosition(line)
+		return position != -1, position
+	}
+	return false, 0
+}
+
+func (player UnbeatablePlayer) filter(line [3]string, matchFunc func(string) bool) int {
+	matchNumber := 0
+	for _, token := range line {
+		if matchFunc(token) {
+			matchNumber += 1
+		}
+	}
+	return matchNumber
+}
+
+func (player UnbeatablePlayer) getEmtySpacePosition(line [3]string) int {
 	position := -1
-	match := 0
 	for i, token := range line {
-		if token != EMPTY_SPACE && token == u.tokenType {
-			match += 1
-		} else if token == "" {
+		if token == "" {
 			position = i
 		}
 	}
-	if match == 2 && position != -1 {
-		return true, position
-	}
-	return false, 0
+	return position
+}
+
+func (u UnbeatablePlayer) sameTokenType(tokenType string) bool {
+	return tokenType == u.tokenType
+}
+
+func (player UnbeatablePlayer) differentTokenType(tokenType string) bool {
+	return tokenType != player.tokenType && tokenType != ""
 }
