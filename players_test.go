@@ -53,5 +53,27 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 				Expect(position).Should(Equal(Position{2, 0}))
 			})
 		})
+		Context("when two noughts are on one of the cross line", func() {
+			It("puts a nought on the cross line free space", func() {
+				snapshot := [3][3]string{}
+				snapshot[0][0] = NOUGHT
+				snapshot[2][2] = NOUGHT
+
+				position := player.PutToken(snapshot)
+
+				Expect(position).Should(Equal(Position{1, 1}))
+			})
+		})
+		Context("when two noughts are on the othe cross line", func() {
+			It("puts a nought on the cross line free space", func() {
+				snapshot := [3][3]string{}
+				snapshot[0][2] = NOUGHT
+				snapshot[1][1] = NOUGHT
+
+				position := player.PutToken(snapshot)
+
+				Expect(position).Should(Equal(Position{2, 0}))
+			})
+		})
 	})
 })
