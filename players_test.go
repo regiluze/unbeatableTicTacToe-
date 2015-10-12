@@ -18,7 +18,7 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		player = NewUnbeateablePlayer(NOUGHT)
 	})
 
-	FDescribe("when the player is trying to win the game", func() {
+	Describe("when the player is trying to win the game", func() {
 		Context("when two noughts are on the first line", func() {
 			It("puts a nought on the first line free space", func() {
 				snapshot := [3][3]string{}
@@ -40,6 +40,17 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 				position := player.PutToken(snapshot)
 
 				Expect(position).Should(Equal(Position{1, 1}))
+			})
+		})
+		Context("when two noughts are on the first column", func() {
+			It("puts a nought on the second column free space", func() {
+				snapshot := [3][3]string{}
+				snapshot[0][0] = NOUGHT
+				snapshot[1][0] = NOUGHT
+
+				position := player.PutToken(snapshot)
+
+				Expect(position).Should(Equal(Position{2, 0}))
 			})
 		})
 	})

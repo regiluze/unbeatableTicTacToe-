@@ -19,8 +19,10 @@ func (u UnbeatablePlayer) PutToken(snapshot BoardSnapshot) Position {
 		if match, position := u.checkLineToWin(line); match {
 			return Position{column, position}
 		}
-		fmt.Println("column ", column)
-		fmt.Println(" line", line)
+		cc := [3]string{snapshot[0][column], snapshot[1][column], snapshot[2][column]}
+		if match, position := u.checkLineToWin(cc); match {
+			return Position{position, column}
+		}
 	}
 
 	return Position{0, 0}
@@ -28,6 +30,7 @@ func (u UnbeatablePlayer) PutToken(snapshot BoardSnapshot) Position {
 }
 
 func (u UnbeatablePlayer) checkLineToWin(line [3]string) (bool, int) {
+	fmt.Println(" line", line)
 	position := -1
 	match := 0
 	for i, token := range line {
