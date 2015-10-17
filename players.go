@@ -39,8 +39,8 @@ type Rules struct {
 
 func NewRules(tokenType string) Rules {
 	r := Rules{tokenType: tokenType}
-	winnerCheckFuncs := []RuleCheckFunc{r.checkLinesToWin, r.checkColumnsToWin, r.checkFirstCrossLine, r.checkSecondCrossLine}
-	safeCheckFuncs := []RuleCheckFunc{r.checkLinesToSave, r.checkColumnsToSave}
+	winnerCheckFuncs := []RuleCheckFunc{r.checkLinesToWin, r.checkColumnsToWin, r.checkFirstCrossLineToWin, r.checkSecondCrossLine}
+	safeCheckFuncs := []RuleCheckFunc{r.checkLinesToSave, r.checkColumnsToSave, r.checkFirstCrossLineToSave}
 	allRules := append(winnerCheckFuncs, safeCheckFuncs...)
 	r.All = allRules
 	return r
@@ -81,9 +81,17 @@ func (r Rules) checkColumns(snapshot BoardSnapshot, matchFunc func(string) bool)
 	return false, Position{}
 }
 
-func (r Rules) checkFirstCrossLine(snapshot BoardSnapshot) (bool, Position) {
+func (r Rules) checkFirstCrossLineToWin(snapshot BoardSnapshot) (bool, Position) {
+	return r.checkFirstCrossLine(snapshot, r.sameTokenType)
+}
+
+func (r Rules) checkFirstCrossLineToSave(snapshot BoardSnapshot) (bool, Position) {
+	return r.checkFirstCrossLine(snapshot, r.differentTokenType)
+}
+
+func (r Rules) checkFirstCrossLine(snapshot BoardSnapshot, matchFunc func(string) bool) (bool, Position) {
 	crossLine := [3]string{snapshot[0][0], snapshot[1][1], snapshot[2][2]}
-	if match, position := r.checkLineToMatch(crossLine, r.sameTokenType); match {
+	if match, position := r.checkLineToMatch(crossLine, matchFunc); match {
 		return true, Position{position, position}
 	}
 	return false, Position{}
