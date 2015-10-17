@@ -15,7 +15,8 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 	)
 
 	BeforeEach(func() {
-		player = NewUnbeateablePlayer(NOUGHT)
+		rules := NewRules(NOUGHT)
+		player = NewUnbeateablePlayer(rules)
 	})
 
 	Describe("when the player is trying to win the game", func() {
