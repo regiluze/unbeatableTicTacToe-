@@ -26,8 +26,8 @@ func (player UnbeatablePlayer) PutToken(snapshot BoardSnapshot) Position {
 }
 
 func (player UnbeatablePlayer) matchWinnerPut(snapshot BoardSnapshot) (bool, Position) {
-	winnerCheckFuncs := []RuleCheckFunc{player.checkLines, player.checkColumns, player.checkFirstCrossLine, player.checkSecondCrossLine}
-	safeCheckFuncs := []RuleCheckFunc{player.checkSaveLines}
+	winnerCheckFuncs := []RuleCheckFunc{player.checkLinesToWin, player.checkColumns, player.checkFirstCrossLine, player.checkSecondCrossLine}
+	safeCheckFuncs := []RuleCheckFunc{player.checkLinesToSave, player.checkSaveColumns}
 	rules := append(winnerCheckFuncs, safeCheckFuncs...)
 	for _, checkFunc := range rules {
 		if match, position := checkFunc(snapshot); match {
@@ -38,18 +38,17 @@ func (player UnbeatablePlayer) matchWinnerPut(snapshot BoardSnapshot) (bool, Pos
 
 }
 
-func (player UnbeatablePlayer) checkLines(snapshot BoardSnapshot) (bool, Position) {
-	for column, line := range snapshot {
-		if match, position := player.checkLineToMatch(line, player.sameTokenType); match {
-			return true, Position{column, position}
-		}
-	}
-	return false, Position{}
+func (player UnbeatablePlayer) checkLinesToWin(snapshot BoardSnapshot) (bool, Position) {
+	return player.checkLines(snapshot, player.sameTokenType)
 }
 
-func (player UnbeatablePlayer) checkSaveLines(snapshot BoardSnapshot) (bool, Position) {
+func (player UnbeatablePlayer) checkLinesToSave(snapshot BoardSnapshot) (bool, Position) {
+	return player.checkLines(snapshot, player.differentTokenType)
+}
+
+func (player UnbeatablePlayer) checkLines(snapshot BoardSnapshot, matchFunc func(string) bool) (bool, Position) {
 	for column, line := range snapshot {
-		if match, position := player.checkLineToMatch(line, player.differentTokenType); match {
+		if match, position := player.checkLineToMatch(line, matchFunc); match {
 			return true, Position{column, position}
 		}
 	}
@@ -60,6 +59,16 @@ func (player UnbeatablePlayer) checkColumns(snapshot BoardSnapshot) (bool, Posit
 	for column, _ := range snapshot {
 		columnLine := [3]string{snapshot[0][column], snapshot[1][column], snapshot[2][column]}
 		if match, position := player.checkLineToMatch(columnLine, player.sameTokenType); match {
+			return true, Position{position, column}
+		}
+	}
+	return false, Position{}
+}
+
+func (player UnbeatablePlayer) checkSaveColumns(snapshot BoardSnapshot) (bool, Position) {
+	for column, _ := range snapshot {
+		columnLine := [3]string{snapshot[0][column], snapshot[1][column], snapshot[2][column]}
+		if match, position := player.checkLineToMatch(columnLine, player.differentTokenType); match {
 			return true, Position{position, column}
 		}
 	}
