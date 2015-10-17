@@ -42,7 +42,8 @@ func NewRules(tokenType string) Rules {
 	winnerCheckFuncs := []RuleCheckFunc{r.checkLinesToWin, r.checkColumnsToWin, r.checkFirstCrossLineToWin, r.checkSecondCrossLineToWin}
 	safeCheckFuncs := []RuleCheckFunc{r.checkLinesToSave, r.checkColumnsToSave, r.checkFirstCrossLineToSave, r.checkSecondCrossLineToSave}
 	allRules := append(winnerCheckFuncs, safeCheckFuncs...)
-	r.All = allRules
+
+	r.All = append(allRules, r.initRule)
 	return r
 }
 
@@ -113,6 +114,15 @@ func (r Rules) checkSecondCrossLine(snapshot BoardSnapshot, matchFunc func(strin
 	return false, Position{}
 }
 
+func (r Rules) initRule(snapshot BoardSnapshot) (bool, Position) {
+	for _, line := range snapshot {
+		if matchNumber := r.filter(line, r.emptySpaces); matchNumber != 3 {
+			return false, Position{0, 0}
+		}
+	}
+	return true, Position{1, 1}
+}
+
 func (r Rules) checkLineToMatch(line [3]string, matchFunc func(string) bool) (bool, int) {
 	if r.filter(line, matchFunc) == 2 {
 		position := r.getEmtySpacePosition(line)
@@ -139,6 +149,10 @@ func (r Rules) getEmtySpacePosition(line [3]string) int {
 		}
 	}
 	return position
+}
+
+func (u Rules) emptySpaces(tokenType string) bool {
+	return tokenType == ""
 }
 
 func (u Rules) sameTokenType(tokenType string) bool {

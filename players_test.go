@@ -127,4 +127,16 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 			})
 		})
 	})
+	Describe("when any player has not chance to win", func() {
+		Context("when the board is empty", func() {
+			It("puts the token on the center of the board", func() {
+				snapshot := [3][3]string{}
+
+				position := player.PutToken(snapshot)
+
+				Expect(position).Should(Equal(Position{1, 1}))
+
+			})
+		})
+	})
 })
