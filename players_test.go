@@ -114,5 +114,17 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 
 			})
 		})
+		Context("when two crosses are on the second cross line", func() {
+			It("puts a nought on the second cross line space", func() {
+				snapshot := [3][3]string{}
+				snapshot[0][2] = CROSS
+				snapshot[2][0] = CROSS
+
+				position := player.PutToken(snapshot)
+
+				Expect(position).Should(Equal(Position{1, 1}))
+
+			})
+		})
 	})
 })
