@@ -1,4 +1,4 @@
-package main_test
+package unbeatable_test
 
 import (
 	_ "fmt"

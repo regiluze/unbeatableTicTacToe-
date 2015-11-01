@@ -1,4 +1,4 @@
-package main_test
+package unbeatable_test
 
 import (
 	_ "fmt"
@@ -7,7 +7,62 @@ import (
 	. "github.com/regiluze/unbeatableTicTacToe-"
 )
 
-const ()
+var _ = Describe("Tic Tac Toe game specs", func() {
+	var (
+		game         TicTacToeGame
+		winnerPlayer Player
+		looserPlayer Player
+	)
+
+	BeforeEach(func() {
+		looserPlayer = &LooserPlayer{}
+	})
+
+	Describe("When the game starts", func() {
+		Context("the player1 puts 3 croosses on the first line", func() {
+			It("returns player1 as winner", func() {
+				winnerPlayer = &FirstLineFillerPlayer{}
+				game = NewTicTacToeGame(winnerPlayer, looserPlayer)
+				winner := game.Start()
+
+				Expect(winner).Should(Equal("player 1"))
+
+			})
+		})
+		Context("the players fill all board", func() {
+			It("returns player1 as winner", func() {
+				anotherLooserPlayer := &AnotherLooserPlayer{}
+				game = NewTicTacToeGame(looserPlayer, anotherLooserPlayer)
+				winner := game.Start()
+
+				Expect(winner).Should(Equal("Draw"))
+
+			})
+		})
+		Context("when a clumsy player 1 put a token on alredy filled place", func() {
+			It("retries the turn and then wins", func() {
+				clumsyWinnerPlayer := &ClumsyWinnerPlayer{}
+				winnerPlayer = &FirstLineFillerPlayer{}
+				game = NewTicTacToeGame(clumsyWinnerPlayer, winnerPlayer)
+				winner := game.Start()
+
+				Expect(winner).Should(Equal("player 1"))
+
+			})
+		})
+		Context("when a clumsy player 2 put a token on alredy filled place", func() {
+			It("retries the turn and then wins", func() {
+				clumsyWinnerPlayer := &ClumsyWinnerPlayer{}
+				winnerPlayer = &FirstLineFillerPlayer{}
+				game = NewTicTacToeGame(winnerPlayer, clumsyWinnerPlayer)
+				winner := game.Start()
+
+				Expect(winner).Should(Equal("player 1"))
+
+			})
+		})
+	})
+})
 
 type LooserPlayer struct {
 	turn int
@@ -82,60 +137,3 @@ func (winner *ClumsyWinnerPlayer) PutToken(board BoardSnapshot) Position {
 	return Position{0, 1}
 
 }
-
-var _ = Describe("Tic Tac Toe game specs", func() {
-	var (
-		game         TicTacToeGame
-		winnerPlayer Player
-		looserPlayer Player
-	)
-
-	BeforeEach(func() {
-		looserPlayer = &LooserPlayer{}
-	})
-
-	Describe("When the game starts", func() {
-		Context("the player1 puts 3 croosses on the first line", func() {
-			It("returns player1 as winner", func() {
-				winnerPlayer = &FirstLineFillerPlayer{}
-				game = NewTicTacToeGame(winnerPlayer, looserPlayer)
-				winner := game.Start()
-
-				Expect(winner).Should(Equal("player 1"))
-
-			})
-		})
-		Context("the players fill all board", func() {
-			It("returns player1 as winner", func() {
-				anotherLooserPlayer := &AnotherLooserPlayer{}
-				game = NewTicTacToeGame(looserPlayer, anotherLooserPlayer)
-				winner := game.Start()
-
-				Expect(winner).Should(Equal("Draw"))
-
-			})
-		})
-		Context("when a clumsy player 1 put a token on alredy filled place", func() {
-			It("retries the turn and then wins", func() {
-				clumsyWinnerPlayer := &ClumsyWinnerPlayer{}
-				winnerPlayer = &FirstLineFillerPlayer{}
-				game = NewTicTacToeGame(clumsyWinnerPlayer, winnerPlayer)
-				winner := game.Start()
-
-				Expect(winner).Should(Equal("player 1"))
-
-			})
-		})
-		Context("when a clumsy player 2 put a token on alredy filled place", func() {
-			It("retries the turn and then wins", func() {
-				clumsyWinnerPlayer := &ClumsyWinnerPlayer{}
-				winnerPlayer = &FirstLineFillerPlayer{}
-				game = NewTicTacToeGame(winnerPlayer, clumsyWinnerPlayer)
-				winner := game.Start()
-
-				Expect(winner).Should(Equal("player 1"))
-
-			})
-		})
-	})
-})

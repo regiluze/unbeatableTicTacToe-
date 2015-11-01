@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"strconv"
+	. "github.com/regiluze/unbeatableTicTacToe-"
 	"time"
 )
 
@@ -16,8 +16,12 @@ func main() {
 
 	player1Selection := selectPlayer("Player 1")
 	player2Selection := selectPlayer("Player 2")
-	fmt.Println("your choice is 1", player1Selection)
-	fmt.Println("your choice is 2", player2Selection)
+	player1 := playerFactory(player1Selection, CROSS, "Player 1")
+	player2 := playerFactory(player2Selection, NOUGHT, "Player 2")
+	game := NewTicTacToeGame(player1, player2)
+	initGame(player1Selection, player2Selection)
+	winner := game.Start()
+	fmt.Println("the winner is: ", winner)
 
 }
 
@@ -30,31 +34,18 @@ func welcome() {
 	fmt.Println("***********************************************")
 }
 
-func selectPlayer(player string) int {
-	fmt.Println(fmt.Sprintf("Select %s: ", player))
-	fmt.Println("1 -> human | 2 -> computer [1, 2]")
-	return readFromUser()
+func playerFactory(player int, tokenType string, name string) Player {
+	if player == HUMAN {
+		return NewHumanPlayer(name)
+	}
+	rules := NewRules(tokenType)
+	return NewUnbeateablePlayer(rules)
 }
 
-func readFromUser() int {
-	var userSelection string
-	_, _ = fmt.Scanf("%s", &userSelection)
-	if isWrongInput(userSelection) {
-		fmt.Println("Please, select these options [1, 2]")
-		fmt.Println("Try again!")
-		readFromUser()
-	}
-	number, _ := strconv.Atoi(userSelection)
-	return number
-}
-
-func isWrongInput(input string) bool {
-	normalizedInput, err := strconv.Atoi(input)
-	if err != nil {
-		return true
-	}
-	if normalizedInput < 1 || normalizedInput > 2 {
-		return true
-	}
-	return false
+func initGame(player1, player2 int) {
+	player := map[int]string{HUMAN: "Human", COMPUTER: "Computer"}
+	fmt.Println("********* Let's start the game  ***************")
+	fmt.Sprintln("*********", player[player1], "vs", player[player2], " ***************************")
+	time.Sleep(time.Millisecond * 300)
+	fmt.Println("***********************************************")
 }

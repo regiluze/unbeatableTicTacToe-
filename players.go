@@ -1,4 +1,4 @@
-package main
+package unbeatable
 
 import (
 	_ "fmt"
