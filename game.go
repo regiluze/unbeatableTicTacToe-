@@ -29,9 +29,9 @@ func NewTicTacToeGame(player1 Player, player2 Player) TicTacToeGame {
 
 }
 
-func (game TicTacToeGame) Start() string {
+func (game TicTacToeGame) Start() (string, BoardSnapshot) {
 	gameResult := game.run()
-	return game.winnerMap[gameResult]
+	return game.winnerMap[gameResult], game.board.Snapshot
 }
 
 func (game TicTacToeGame) run() string {

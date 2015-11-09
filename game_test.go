@@ -23,7 +23,7 @@ var _ = Describe("Tic Tac Toe game specs", func() {
 			It("returns player1 as winner", func() {
 				winnerPlayer = &FirstLineFillerPlayer{}
 				game = NewTicTacToeGame(winnerPlayer, looserPlayer)
-				winner := game.Start()
+				winner, _ := game.Start()
 
 				Expect(winner).Should(Equal("player 1"))
 
@@ -33,7 +33,7 @@ var _ = Describe("Tic Tac Toe game specs", func() {
 			It("returns player1 as winner", func() {
 				anotherLooserPlayer := &AnotherLooserPlayer{}
 				game = NewTicTacToeGame(looserPlayer, anotherLooserPlayer)
-				winner := game.Start()
+				winner, _ := game.Start()
 
 				Expect(winner).Should(Equal("Draw"))
 
@@ -44,10 +44,19 @@ var _ = Describe("Tic Tac Toe game specs", func() {
 				clumsyWinnerPlayer := &ClumsyWinnerPlayer{}
 				winnerPlayer = &FirstLineFillerPlayer{}
 				game = NewTicTacToeGame(clumsyWinnerPlayer, winnerPlayer)
-				winner := game.Start()
+				winner, _ := game.Start()
 
 				Expect(winner).Should(Equal("player 1"))
 
+				It("retries the turn and then wins", func() {
+					clumsyWinnerPlayer := &ClumsyWinnerPlayer{}
+					winnerPlayer = &FirstLineFillerPlayer{}
+					game = NewTicTacToeGame(clumsyWinnerPlayer, winnerPlayer)
+					winner, _ := game.Start()
+
+					Expect(winner).Should(Equal("player 1"))
+
+				})
 			})
 		})
 		Context("when a clumsy player 2 put a token on alredy filled place", func() {
@@ -55,7 +64,7 @@ var _ = Describe("Tic Tac Toe game specs", func() {
 				clumsyWinnerPlayer := &ClumsyWinnerPlayer{}
 				winnerPlayer = &FirstLineFillerPlayer{}
 				game = NewTicTacToeGame(winnerPlayer, clumsyWinnerPlayer)
-				winner := game.Start()
+				winner, _ := game.Start()
 
 				Expect(winner).Should(Equal("player 1"))
 
