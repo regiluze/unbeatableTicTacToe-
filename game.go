@@ -50,9 +50,9 @@ func (game TicTacToeGame) run() string {
 
 func (game TicTacToeGame) safeTokePut(putFunction putToken, player Player, gameSnapshot BoardSnapshot) BoardSnapshot {
 	position := player.PutToken(gameSnapshot)
-	gameSnapshot, err := putFunction(position)
+	newGameSnapshot, err := putFunction(position)
 	if err != nil {
-		game.safeTokePut(putFunction, player, gameSnapshot)
+		return game.safeTokePut(putFunction, player, gameSnapshot)
 	}
-	return gameSnapshot
+	return newGameSnapshot
 }

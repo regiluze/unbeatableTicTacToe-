@@ -91,7 +91,6 @@ func (board *TicTacToeBoard) putToken(token string, position Position) (BoardSna
 }
 
 func (board *TicTacToeBoard) checkThreeInLine() string {
-
 	if token, exists := board.inLineHorizontally(); exists {
 		return token
 	}
@@ -101,7 +100,6 @@ func (board *TicTacToeBoard) checkThreeInLine() string {
 	if token, exists := board.inLineOnCrosses(); exists {
 		return token
 	}
-
 	return NOT_INLINE
 }
 
