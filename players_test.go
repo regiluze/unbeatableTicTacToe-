@@ -35,7 +35,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		})
 		Context("when two noughts are on the second line", func() {
 			It("puts a nought on the second line free space", func() {
-				snapshot := [3][3]string{}
 				snapshot[1][0] = NOUGHT
 				snapshot[1][2] = NOUGHT
 
@@ -46,7 +45,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		})
 		Context("when two noughts are on the first column", func() {
 			It("puts a nought on the second column free space", func() {
-				snapshot := [3][3]string{}
 				snapshot[0][0] = NOUGHT
 				snapshot[1][0] = NOUGHT
 
@@ -57,7 +55,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		})
 		Context("when two noughts are on one of the cross line", func() {
 			It("puts a nought on the cross line free space", func() {
-				snapshot := [3][3]string{}
 				snapshot[0][0] = NOUGHT
 				snapshot[2][2] = NOUGHT
 
@@ -68,7 +65,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		})
 		Context("when two noughts are on the othe cross line", func() {
 			It("puts a nought on the cross line free space", func() {
-				snapshot := [3][3]string{}
 				snapshot[0][2] = NOUGHT
 				snapshot[1][1] = NOUGHT
 
@@ -81,7 +77,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 	Describe("when the player is trying to avoid the choice of win the game to the other player", func() {
 		Context("when two crosses are on the first line", func() {
 			It("puts a nought on the first line free space", func() {
-				snapshot := BoardSnapshot{}
 				snapshot[0][0] = NOUGHT
 				snapshot[1][0] = CROSS
 				snapshot[1][1] = CROSS
@@ -94,7 +89,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		})
 		Context("when two crosses are on the first column", func() {
 			It("puts a nought on the first column space", func() {
-				snapshot := [3][3]string{}
 				snapshot[0][0] = CROSS
 				snapshot[2][0] = CROSS
 
@@ -106,7 +100,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		})
 		Context("when two crosses are on the first cross line", func() {
 			It("puts a nought on the first cross line space", func() {
-				snapshot := [3][3]string{}
 				snapshot[0][0] = CROSS
 				snapshot[2][2] = CROSS
 
@@ -118,7 +111,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		})
 		Context("when two crosses are on the second cross line", func() {
 			It("puts a nought on the second cross line space", func() {
-				snapshot := [3][3]string{}
 				snapshot[0][2] = CROSS
 				snapshot[2][0] = CROSS
 
@@ -132,8 +124,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 	Describe("when any player has not chance to win", func() {
 		Context("when the board is empty", func() {
 			It("puts the token on the center of the board", func() {
-				snapshot := [3][3]string{}
-
 				position := player.PutToken(snapshot)
 
 				Expect(position).Should(Equal(Position{1, 1}))

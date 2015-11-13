@@ -165,7 +165,7 @@ func (r Rules) filter(line [3]string, matchFunc func(string) bool) int {
 func (r Rules) getEmtySpacePosition(line [3]string) int {
 	position := -1
 	for i, token := range line {
-		if token == "" {
+		if token == "-" {
 			position = i
 		}
 	}
@@ -173,7 +173,7 @@ func (r Rules) getEmtySpacePosition(line [3]string) int {
 }
 
 func (u Rules) emptySpaces(tokenType string) bool {
-	return tokenType == ""
+	return tokenType == "-"
 }
 
 func (u Rules) sameTokenType(tokenType string) bool {
@@ -181,5 +181,5 @@ func (u Rules) sameTokenType(tokenType string) bool {
 }
 
 func (r Rules) differentTokenType(tokenType string) bool {
-	return tokenType != r.tokenType && tokenType != ""
+	return tokenType != r.tokenType && tokenType != "-"
 }
