@@ -36,6 +36,14 @@ func (board BoardSnapshot) Print() {
 	}
 }
 
+func (board *BoardSnapshot) Reset() {
+	for row := 0; row < 3; row++ {
+		for col := 0; col < 3; col++ {
+			board[row][col] = EMPTY_SPACE
+		}
+	}
+}
+
 type Position struct {
 	Col  int
 	Line int
@@ -64,11 +72,7 @@ func (board *TicTacToeBoard) PutCross(position Position) (BoardSnapshot, error) 
 
 func (board *TicTacToeBoard) Reset() {
 	board.numberOfTokens = 0
-	for row := 0; row < 3; row++ {
-		for col := 0; col < 3; col++ {
-			board.Snapshot[row][col] = EMPTY_SPACE
-		}
-	}
+	board.Snapshot.Reset()
 }
 
 func (board *TicTacToeBoard) IsOver() (bool, string) {

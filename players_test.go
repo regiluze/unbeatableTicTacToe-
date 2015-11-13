@@ -18,7 +18,9 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 	BeforeEach(func() {
 		rules := NewRules(NOUGHT)
 		player = NewUnbeateablePlayer(rules)
-		snapshot = buildEmptyBoard()
+		//	snapshot = buildEmptyBoard()
+		snapshot = BoardSnapshot{}
+		snapshot.Reset()
 	})
 
 	Describe("when the player is trying to win the game", func() {
@@ -142,13 +144,3 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		})
 	})
 })
-
-func buildEmptyBoard() BoardSnapshot {
-	snapshot := BoardSnapshot{}
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			snapshot[i][j] = "-"
-		}
-	}
-	return snapshot
-}

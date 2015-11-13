@@ -33,21 +33,11 @@ func (player UnbeatablePlayer) matchRuleToPut(snapshot BoardSnapshot) (bool, Pos
 func (player UnbeatablePlayer) firstFreeSpace(snapshot BoardSnapshot) Position {
 	for line := 0; line < 3; line++ {
 		for column := 0; column < 3; column++ {
-			if snapshot[line][column] == "-" {
+			if snapshot[line][column] == EMPTY_SPACE {
 				return Position{line, column}
 			}
 		}
 	}
-	//for lineNumber, line := range snapshot {
-	//	fmt.Println("EGI >>>>>>>>>>>> line num", lineNumber)
-	//	fmt.Println("EGI >>>>>>>>>>>> line ", line)
-	//	for column, token := range line {
-	//		fmt.Println("EGI >>>>>>>>>>>>", token)
-	//		if token == "-" {
-	//			return Position{lineNumber, column}
-	//		}
-	//	}
-	//}
 	return Position{0, 0}
 }
 
@@ -165,7 +155,7 @@ func (r Rules) filter(line [3]string, matchFunc func(string) bool) int {
 func (r Rules) getEmtySpacePosition(line [3]string) int {
 	position := -1
 	for i, token := range line {
-		if token == "-" {
+		if token == EMPTY_SPACE {
 			position = i
 		}
 	}
@@ -173,7 +163,7 @@ func (r Rules) getEmtySpacePosition(line [3]string) int {
 }
 
 func (u Rules) emptySpaces(tokenType string) bool {
-	return tokenType == "-"
+	return tokenType == EMPTY_SPACE
 }
 
 func (u Rules) sameTokenType(tokenType string) bool {
@@ -181,5 +171,5 @@ func (u Rules) sameTokenType(tokenType string) bool {
 }
 
 func (r Rules) differentTokenType(tokenType string) bool {
-	return tokenType != r.tokenType && tokenType != "-"
+	return tokenType != r.tokenType && tokenType != EMPTY_SPACE
 }
