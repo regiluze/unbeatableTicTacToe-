@@ -31,13 +31,23 @@ func (player UnbeatablePlayer) matchRuleToPut(snapshot BoardSnapshot) (bool, Pos
 }
 
 func (player UnbeatablePlayer) firstFreeSpace(snapshot BoardSnapshot) Position {
-	for lineNumber, line := range snapshot {
-		for column, token := range line {
-			if token == "" {
-				return Position{lineNumber, column}
+	for line := 0; line < 3; line++ {
+		for column := 0; column < 3; column++ {
+			if snapshot[line][column] == "-" {
+				return Position{line, column}
 			}
 		}
 	}
+	//for lineNumber, line := range snapshot {
+	//	fmt.Println("EGI >>>>>>>>>>>> line num", lineNumber)
+	//	fmt.Println("EGI >>>>>>>>>>>> line ", line)
+	//	for column, token := range line {
+	//		fmt.Println("EGI >>>>>>>>>>>>", token)
+	//		if token == "-" {
+	//			return Position{lineNumber, column}
+	//		}
+	//	}
+	//}
 	return Position{0, 0}
 }
 

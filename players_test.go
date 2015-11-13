@@ -11,18 +11,19 @@ const ()
 
 var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 	var (
-		player UnbeatablePlayer
+		player   UnbeatablePlayer
+		snapshot BoardSnapshot
 	)
 
 	BeforeEach(func() {
 		rules := NewRules(NOUGHT)
 		player = NewUnbeateablePlayer(rules)
+		snapshot = buildEmptyBoard()
 	})
 
 	Describe("when the player is trying to win the game", func() {
 		Context("when two noughts are on the first line", func() {
 			It("puts a nought on the first line free space", func() {
-				snapshot := [3][3]string{}
 				snapshot[0][0] = NOUGHT
 				snapshot[0][1] = NOUGHT
 
@@ -80,13 +81,14 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 	Describe("when the player is trying to avoid the choice of win the game to the other player", func() {
 		Context("when two crosses are on the first line", func() {
 			It("puts a nought on the first line free space", func() {
-				snapshot := [3][3]string{}
-				snapshot[0][0] = CROSS
-				snapshot[0][1] = CROSS
+				snapshot := BoardSnapshot{}
+				snapshot[0][0] = NOUGHT
+				snapshot[1][0] = CROSS
+				snapshot[1][1] = CROSS
 
 				position := player.PutToken(snapshot)
 
-				Expect(position).Should(Equal(Position{0, 2}))
+				Expect(position).Should(Equal(Position{1, 2}))
 
 			})
 		})
@@ -140,7 +142,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		})
 		Context("when there is one token on the board", func() {
 			It("puts a nought on the first free space of the board", func() {
-				snapshot := [3][3]string{}
 				snapshot[0][0] = CROSS
 
 				position := player.PutToken(snapshot)
@@ -151,3 +152,13 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		})
 	})
 })
+
+func buildEmptyBoard() BoardSnapshot {
+	snapshot := BoardSnapshot{}
+	for i := 0; i < 3; i++ {
+		for j := 0; j < 3; j++ {
+			snapshot[i][j] = "-"
+		}
+	}
+	return snapshot
+}
