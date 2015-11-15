@@ -18,16 +18,12 @@ type BoardSnapshot [3][3]string
 func (board BoardSnapshot) Print() {
 	fmt.Println("   | 0 | 1 | 2 |")
 	fmt.Println("----------------")
-	for line := 0; line < 3; line++ {
-		fmt.Print(" ", line, " ")
-		for column := 0; column < 3; column++ {
+	for column := 0; column < 3; column++ {
+		fmt.Print(" ", column, " ")
+		for line := 0; line < 3; line++ {
 			fmt.Print("|")
-			if board[column][line] == "" {
-				fmt.Print(" - ")
-			} else {
-				fmt.Print(" ", board[column][line], " ")
-			}
-			if column == 2 {
+			fmt.Print(" ", board[line][column], " ")
+			if line == 2 {
 				fmt.Print("|")
 			}
 		}
@@ -37,6 +33,7 @@ func (board BoardSnapshot) Print() {
 }
 
 func (board *BoardSnapshot) Reset() {
+	fmt.Println("-----reset -----")
 	for row := 0; row < 3; row++ {
 		for col := 0; col < 3; col++ {
 			board[row][col] = EMPTY_SPACE
