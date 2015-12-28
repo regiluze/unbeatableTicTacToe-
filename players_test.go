@@ -76,7 +76,7 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 			})
 		})
 	})
-	Describe("when the player is trying to avoid the choice of win the game to the other player", func() {
+	Describe("when the player is trying to not loose", func() {
 		Context("when two crosses are on the first line", func() {
 			It("puts a nought on the first line free space", func() {
 				snapshot[0][0] = NOUGHT
@@ -133,13 +133,25 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 			})
 		})
 		Context("when there is one token on the board", func() {
-			It("puts a nought on the first free space of the board", func() {
-				snapshot[0][0] = CROSS
+			Context("when central space is not free", func() {
+				It("puts a nought on the first free space of the board", func() {
+					snapshot[1][1] = CROSS
 
-				position := player.PutToken(snapshot)
+					position := player.PutToken(snapshot)
 
-				Expect(position).Should(Equal(Position{0, 1}))
+					Expect(position).Should(Equal(Position{0, 0}))
 
+				})
+			})
+			Context("when central space is free", func() {
+				It("puts a nought on central space", func() {
+					snapshot[0][0] = CROSS
+
+					position := player.PutToken(snapshot)
+
+					Expect(position).Should(Equal(Position{1, 1}))
+
+				})
 			})
 		})
 	})

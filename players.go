@@ -17,7 +17,7 @@ func (player UnbeatablePlayer) PutToken(snapshot BoardSnapshot) Position {
 	if match, position := player.matchRuleToPut(snapshot); match {
 		return position
 	}
-	return player.firstFreeSpace(snapshot)
+	return player.defaultRule(snapshot)
 }
 
 func (player UnbeatablePlayer) matchRuleToPut(snapshot BoardSnapshot) (bool, Position) {
@@ -30,7 +30,10 @@ func (player UnbeatablePlayer) matchRuleToPut(snapshot BoardSnapshot) (bool, Pos
 
 }
 
-func (player UnbeatablePlayer) firstFreeSpace(snapshot BoardSnapshot) Position {
+func (player UnbeatablePlayer) defaultRule(snapshot BoardSnapshot) Position {
+	if snapshot[1][1] == EMPTY_SPACE {
+		return Position{1, 1}
+	}
 	for line := 0; line < 3; line++ {
 		for column := 0; column < 3; column++ {
 			if snapshot[line][column] == EMPTY_SPACE {
