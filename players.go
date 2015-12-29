@@ -34,6 +34,10 @@ func (player UnbeatablePlayer) defaultRule(snapshot BoardSnapshot) Position {
 	if snapshot[1][1] == EMPTY_SPACE {
 		return Position{1, 1}
 	}
+	return player.firstFreeSpacePosition(snapshot)
+}
+
+func (player UnbeatablePlayer) firstFreeSpacePosition(snapshot BoardSnapshot) Position {
 	for line := 0; line < 3; line++ {
 		for column := 0; column < 3; column++ {
 			if snapshot[line][column] == EMPTY_SPACE {
