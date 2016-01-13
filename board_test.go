@@ -9,7 +9,7 @@ import (
 
 const ()
 
-var _ = Describe("Tic Tac Toe game board specs", func() {
+var _ = Describe("Unbeatable TicTacToe game board specs", func() {
 	var (
 		board              *TicTacToeBoard
 		irrelevantPosition Position
@@ -20,7 +20,7 @@ var _ = Describe("Tic Tac Toe game board specs", func() {
 		irrelevantPosition = Position{Col: 0, Line: 0}
 	})
 
-	Describe("Filling the board with tokens", func() {
+	FDescribe("Filling the board with tokens", func() {
 		Context("when adding a nought", func() {
 			It("fills board position with a nought token", func() {
 				boardSnapshot, _ := board.PutNought(irrelevantPosition)
