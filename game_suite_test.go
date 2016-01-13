@@ -9,5 +9,5 @@ import (
 
 func TestTicTacToeBoard(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Tic tac toe board Suite")
+	RunSpecs(t, "unbeatable TicTacToe game Suite")
 }
