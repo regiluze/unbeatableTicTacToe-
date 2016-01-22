@@ -27,7 +27,6 @@ func (player UnbeatablePlayer) matchRuleToPut(snapshot BoardSnapshot) (bool, Pos
 		}
 	}
 	return false, Position{}
-
 }
 
 func (player UnbeatablePlayer) defaultRule(snapshot BoardSnapshot) Position {
@@ -38,10 +37,10 @@ func (player UnbeatablePlayer) defaultRule(snapshot BoardSnapshot) Position {
 }
 
 func (player UnbeatablePlayer) firstFreeSpacePosition(snapshot BoardSnapshot) Position {
-	for line := 0; line < 3; line++ {
+	for row := 0; row < 3; row++ {
 		for column := 0; column < 3; column++ {
-			if snapshot[line][column] == EMPTY_SPACE {
-				return Position{line, column}
+			if snapshot[row][column] == EMPTY_SPACE {
+				return Position{row, column}
 			}
 		}
 	}
@@ -74,8 +73,8 @@ func (r Rules) checkLinesToSave(snapshot BoardSnapshot) (bool, Position) {
 }
 
 func (r Rules) checkLines(snapshot BoardSnapshot, matchFunc func(string) bool) (bool, Position) {
-	for column, line := range snapshot {
-		if match, position := r.checkLineToMatch(line, matchFunc); match {
+	for column, row := range snapshot {
+		if match, position := r.checkLineToMatch(row, matchFunc); match {
 			return true, Position{column, position}
 		}
 	}
@@ -92,7 +91,7 @@ func (r Rules) checkColumnsToSave(snapshot BoardSnapshot) (bool, Position) {
 
 func (r Rules) checkColumns(snapshot BoardSnapshot, matchFunc func(string) bool) (bool, Position) {
 	for column, _ := range snapshot {
-		columnLine := [3]string{snapshot[0][column], snapshot[1][column], snapshot[2][column]}
+		columnLine := BoardLine{snapshot[0][column], snapshot[1][column], snapshot[2][column]}
 		if match, position := r.checkLineToMatch(columnLine, matchFunc); match {
 			return true, Position{position, column}
 		}
@@ -109,7 +108,7 @@ func (r Rules) checkFirstCrossLineToSave(snapshot BoardSnapshot) (bool, Position
 }
 
 func (r Rules) checkFirstCrossLine(snapshot BoardSnapshot, matchFunc func(string) bool) (bool, Position) {
-	crossLine := [3]string{snapshot[0][0], snapshot[1][1], snapshot[2][2]}
+	crossLine := BoardLine{snapshot[0][0], snapshot[1][1], snapshot[2][2]}
 	if match, position := r.checkLineToMatch(crossLine, matchFunc); match {
 		return true, Position{position, position}
 	}
@@ -125,7 +124,7 @@ func (r Rules) checkSecondCrossLineToSave(snapshot BoardSnapshot) (bool, Positio
 }
 
 func (r Rules) checkSecondCrossLine(snapshot BoardSnapshot, matchFunc func(string) bool) (bool, Position) {
-	crossLine := [3]string{snapshot[0][2], snapshot[1][1], snapshot[2][0]}
+	crossLine := BoardLine{snapshot[0][2], snapshot[1][1], snapshot[2][0]}
 	if match, position := r.checkLineToMatch(crossLine, matchFunc); match {
 		return true, Position{position, 2 - position}
 	}
@@ -133,25 +132,25 @@ func (r Rules) checkSecondCrossLine(snapshot BoardSnapshot, matchFunc func(strin
 }
 
 func (r Rules) initRule(snapshot BoardSnapshot) (bool, Position) {
-	for _, line := range snapshot {
-		if matchNumber := r.filter(line, r.emptySpaces); matchNumber != 3 {
+	for _, row := range snapshot {
+		if matchNumber := r.filter(row, r.emptySpaces); matchNumber != 3 {
 			return false, Position{0, 0}
 		}
 	}
 	return true, Position{1, 1}
 }
 
-func (r Rules) checkLineToMatch(line [3]string, matchFunc func(string) bool) (bool, int) {
-	if r.filter(line, matchFunc) == 2 {
-		position := r.getEmtySpacePosition(line)
+func (r Rules) checkLineToMatch(row BoardLine, matchFunc func(string) bool) (bool, int) {
+	if r.filter(row, matchFunc) == 2 {
+		position := r.getEmtySpacePosition(row)
 		return position != -1, position
 	}
 	return false, 0
 }
 
-func (r Rules) filter(line [3]string, matchFunc func(string) bool) int {
+func (r Rules) filter(row BoardLine, matchFunc func(string) bool) int {
 	matchNumber := 0
-	for _, token := range line {
+	for _, token := range row {
 		if matchFunc(token) {
 			matchNumber += 1
 		}
@@ -159,9 +158,9 @@ func (r Rules) filter(line [3]string, matchFunc func(string) bool) int {
 	return matchNumber
 }
 
-func (r Rules) getEmtySpacePosition(line [3]string) int {
+func (r Rules) getEmtySpacePosition(row BoardLine) int {
 	position := -1
-	for i, token := range line {
+	for i, token := range row {
 		if token == EMPTY_SPACE {
 			position = i
 		}
