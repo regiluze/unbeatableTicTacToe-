@@ -20,13 +20,14 @@ var _ = Describe("Unbeatable TicTacToe game board specs", func() {
 		irrelevantPosition = Position{Col: 0, Line: 0}
 	})
 
-	FDescribe("Filling the board with tokens", func() {
+	Describe("Filling the board with tokens", func() {
 		Context("when adding a nought", func() {
 			It("fills board position with a nought token", func() {
 				boardSnapshot, _ := board.PutNought(irrelevantPosition)
 
 				Expect(boardSnapshot[irrelevantPosition.Col][irrelevantPosition.Line]).Should(Equal(NOUGHT))
 			})
+
 			Context("when the board place is already filled", func() {
 				It("returns an error", func() {
 					board.PutNought(irrelevantPosition)
@@ -42,6 +43,7 @@ var _ = Describe("Unbeatable TicTacToe game board specs", func() {
 
 				Expect(boardSnapshot[irrelevantPosition.Col][irrelevantPosition.Line]).To(Equal(CROSS))
 			})
+
 			Context("when the board place is already filled", func() {
 				It("returns an error", func() {
 					board.PutCross(irrelevantPosition)
@@ -52,7 +54,7 @@ var _ = Describe("Unbeatable TicTacToe game board specs", func() {
 			})
 		})
 	})
-	Context("when reset the board", func() {
+	Context("when reseting the board", func() {
 		It("cleans all tokens from the board", func() {
 			board.PutNought(irrelevantPosition)
 
@@ -62,21 +64,19 @@ var _ = Describe("Unbeatable TicTacToe game board specs", func() {
 			Expect(err).Should(BeNil())
 		})
 	})
-	Describe("the game is over", func() {
-		Context("when the board is completly full", func() {
-			It("returns true and empty string", func() {
 
+	Describe("checking the board status", func() {
+		Context("when the board is completly full", func() {
+			It("returns true", func() {
 				fillAllBoard(board)
 
-				result, winner := board.IsOver()
+				result := board.IsFull()
 
 				Expect(result).Should(BeTrue())
-				Expect(winner).Should(BeEmpty())
-
 			})
 		})
 
-		Context("when the same type three tokens are in line", func() {
+		Context("when there are three tokens in line", func() {
 			Context("when three crosses are on the first line", func() {
 				It("returns true and a cross", func() {
 
@@ -84,10 +84,10 @@ var _ = Describe("Unbeatable TicTacToe game board specs", func() {
 					board.PutCross(Position{0, 1})
 					board.PutCross(Position{0, 2})
 
-					result, winner := board.IsOver()
+					result, winner := board.IsAnyInLine()
 
 					Expect(result).Should(BeTrue())
-					Expect(winner).Should(Equal(CROSS))
+					Expect(winner.Type).Should(Equal(CROSS))
 
 				})
 			})
@@ -98,71 +98,63 @@ var _ = Describe("Unbeatable TicTacToe game board specs", func() {
 					board.PutCross(Position{1, 1})
 					board.PutCross(Position{1, 2})
 
-					result, winner := board.IsOver()
+					result, winner := board.IsAnyInLine()
 
 					Expect(result).Should(BeTrue())
-					Expect(winner).Should(Equal(CROSS))
+					Expect(winner.Type).Should(Equal(CROSS))
 
 				})
 			})
 			Context("when three noughts are on the third line", func() {
 				It("returns true and a hought", func() {
-
 					board.PutNought(Position{2, 0})
 					board.PutNought(Position{2, 1})
 					board.PutNought(Position{2, 2})
 
-					result, winner := board.IsOver()
+					result, winner := board.IsAnyInLine()
 
 					Expect(result).Should(BeTrue())
-					Expect(winner).Should(Equal(NOUGHT))
-
+					Expect(winner.Type).Should(Equal(NOUGHT))
 				})
 			})
 		})
 		Context("when the same type three tokens are on column line", func() {
 			Context("when three crosses are on the first column", func() {
 				It("returns true and a cross", func() {
-
 					board.PutCross(Position{0, 0})
 					board.PutCross(Position{1, 0})
 					board.PutCross(Position{2, 0})
 
-					result, winner := board.IsOver()
+					result, winner := board.IsAnyInLine()
 
 					Expect(result).Should(BeTrue())
-					Expect(winner).Should(Equal(CROSS))
-
+					Expect(winner.Type).Should(Equal(CROSS))
 				})
 			})
 			Context("when three croosses are on the second column", func() {
 				It("returns true and a cross", func() {
-
 					board.PutCross(Position{0, 1})
 					board.PutCross(Position{1, 1})
 					board.PutCross(Position{2, 1})
 
-					result, winner := board.IsOver()
+					result, winner := board.IsAnyInLine()
 
 					Expect(result).Should(BeTrue())
-					Expect(winner).Should(Equal(CROSS))
-
+					Expect(winner.Type).Should(Equal(CROSS))
 				})
 			})
 		})
 		Context("when the same type three tokens  are on cross lines", func() {
 			Context("when three noughts are on first cross", func() {
 				It("returns true and a nought", func() {
-
 					board.PutNought(Position{0, 0})
 					board.PutNought(Position{1, 1})
 					board.PutNought(Position{2, 2})
 
-					result, winner := board.IsOver()
+					result, winner := board.IsAnyInLine()
 
 					Expect(result).Should(BeTrue())
-					Expect(winner).Should(Equal(NOUGHT))
-
+					Expect(winner.Type).Should(Equal(NOUGHT))
 				})
 			})
 			Context("when three crosses are on second cross", func() {
@@ -172,10 +164,10 @@ var _ = Describe("Unbeatable TicTacToe game board specs", func() {
 					board.PutCross(Position{1, 1})
 					board.PutCross(Position{2, 0})
 
-					result, winner := board.IsOver()
+					result, winner := board.IsAnyInLine()
 
 					Expect(result).Should(BeTrue())
-					Expect(winner).Should(Equal(CROSS))
+					Expect(winner.Type).Should(Equal(CROSS))
 
 				})
 			})

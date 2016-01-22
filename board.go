@@ -8,11 +8,17 @@ import (
 const (
 	NOUGHT          = "O"
 	CROSS           = "X"
+	UNTYPED         = ""
 	EMPTY_SPACE     = "-"
 	NOT_INLINE      = ""
 	TOKENS_ON_BOARD = 9
 )
 
+type Token struct {
+	Type string
+}
+
+type BoardLine [3]string
 type BoardSnapshot [3][3]string
 
 func (board BoardSnapshot) Print() {
@@ -20,10 +26,10 @@ func (board BoardSnapshot) Print() {
 	fmt.Println("----------------")
 	for column := 0; column < 3; column++ {
 		fmt.Print(" ", column, " ")
-		for line := 0; line < 3; line++ {
+		for row := 0; row < 3; row++ {
 			fmt.Print("|")
-			fmt.Print(" ", board[line][column], " ")
-			if line == 2 {
+			fmt.Print(" ", board[row][column], " ")
+			if row == 2 {
 				fmt.Print("|")
 			}
 		}
@@ -33,7 +39,6 @@ func (board BoardSnapshot) Print() {
 }
 
 func (board *BoardSnapshot) Reset() {
-	fmt.Println("-----reset -----")
 	for row := 0; row < 3; row++ {
 		for col := 0; col < 3; col++ {
 			board[row][col] = EMPTY_SPACE
@@ -52,11 +57,9 @@ type TicTacToeBoard struct {
 }
 
 func NewTicTacToeBoard() *TicTacToeBoard {
-
 	board := &TicTacToeBoard{}
 	board.Reset()
 	return board
-
 }
 
 func (board *TicTacToeBoard) PutNought(position Position) (BoardSnapshot, error) {
@@ -72,14 +75,17 @@ func (board *TicTacToeBoard) Reset() {
 	board.Snapshot.Reset()
 }
 
-func (board *TicTacToeBoard) IsOver() (bool, string) {
+func (board *TicTacToeBoard) IsFull() bool {
 	if board.numberOfTokens == TOKENS_ON_BOARD {
-		return true, NOT_INLINE
+		return true
 	}
-	if tokenInLine := board.checkThreeInLine(); tokenInLine != NOT_INLINE {
-		return true, tokenInLine
-	}
-	return false, NOT_INLINE
+	return false
+}
+
+func (board *TicTacToeBoard) IsAnyInLine() (bool, Token) {
+	token := board.checkThreeInLine()
+	match := token.Type != UNTYPED
+	return match, token
 }
 
 func (board *TicTacToeBoard) putToken(token string, position Position) (BoardSnapshot, error) {
@@ -91,56 +97,56 @@ func (board *TicTacToeBoard) putToken(token string, position Position) (BoardSna
 	return board.Snapshot, nil
 }
 
-func (board *TicTacToeBoard) checkThreeInLine() string {
-	if token, exists := board.inLineHorizontally(); exists {
+func (board *TicTacToeBoard) checkThreeInLine() Token {
+	if token, exists := board.inLineOnRows(); exists {
 		return token
 	}
-	if token, exists := board.inLineVertically(); exists {
+	if token, exists := board.inLineOnColumns(); exists {
 		return token
 	}
 	if token, exists := board.inLineOnCrosses(); exists {
 		return token
 	}
-	return NOT_INLINE
+	return Token{Type: UNTYPED}
 }
 
-func (board *TicTacToeBoard) inLineOnCrosses() (string, bool) {
-	cross := [3]string{board.Snapshot[0][0], board.Snapshot[1][1], board.Snapshot[2][2]}
-	if token := board.threeInLine(cross); token != NOT_INLINE {
-		return token, true
-	}
-	cross = [3]string{board.Snapshot[0][2], board.Snapshot[1][1], board.Snapshot[2][0]}
-	if token := board.threeInLine(cross); token != NOT_INLINE {
-		return token, true
-	}
-	return NOT_INLINE, false
-}
-
-func (board *TicTacToeBoard) inLineHorizontally() (string, bool) {
-	for line := 0; line < 3; line++ {
-		if token := board.threeInLine(board.Snapshot[line]); token != NOT_INLINE {
-			return token, true
+func (board *TicTacToeBoard) inLineOnRows() (Token, bool) {
+	for row := 0; row < 3; row++ {
+		if tokenType := board.threeInLine(board.Snapshot[row]); tokenType != UNTYPED {
+			return Token{Type: tokenType}, true
 		}
 	}
-	return NOT_INLINE, false
+	return Token{Type: UNTYPED}, false
 }
 
-func (board *TicTacToeBoard) inLineVertically() (string, bool) {
+func (board *TicTacToeBoard) inLineOnColumns() (Token, bool) {
 	for column := 0; column < 3; column++ {
 		tokensLine := [3]string{board.Snapshot[0][column], board.Snapshot[1][column], board.Snapshot[2][column]}
-		if token := board.threeInLine(tokensLine); token != NOT_INLINE {
-			return token, true
+		if tokenType := board.threeInLine(tokensLine); tokenType != UNTYPED {
+			return Token{Type: tokenType}, true
 		}
 	}
-	return NOT_INLINE, false
+	return Token{Type: UNTYPED}, false
 }
 
-func (board *TicTacToeBoard) threeInLine(line [3]string) string {
-	token := line[0]
-	if token != EMPTY_SPACE && line[1] == token && line[2] == token {
+func (board *TicTacToeBoard) inLineOnCrosses() (Token, bool) {
+	cross := [3]string{board.Snapshot[0][0], board.Snapshot[1][1], board.Snapshot[2][2]}
+	if tokenType := board.threeInLine(cross); tokenType != UNTYPED {
+		return Token{Type: tokenType}, true
+	}
+	cross = [3]string{board.Snapshot[0][2], board.Snapshot[1][1], board.Snapshot[2][0]}
+	if tokenType := board.threeInLine(cross); tokenType != UNTYPED {
+		return Token{Type: tokenType}, true
+	}
+	return Token{Type: UNTYPED}, false
+}
+
+func (board *TicTacToeBoard) threeInLine(row BoardLine) string {
+	token := row[0]
+	if token != EMPTY_SPACE && row[1] == token && row[2] == token {
 		return token
 	}
-	return NOT_INLINE
+	return UNTYPED
 }
 
 func (board *TicTacToeBoard) placeIsFilled(position Position) bool {

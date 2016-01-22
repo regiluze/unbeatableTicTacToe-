@@ -30,7 +30,7 @@ var _ = Describe("Tic Tac Toe game specs", func() {
 			})
 		})
 		Context("the players fill all board", func() {
-			It("returns player1 as winner", func() {
+			It("returns Draw as result", func() {
 				anotherLooserPlayer := &AnotherLooserPlayer{}
 				game = NewTicTacToeGame(looserPlayer, anotherLooserPlayer)
 				winner, _ := game.Start()
