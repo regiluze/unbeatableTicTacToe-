@@ -1,4 +1,4 @@
-# unbeatableTicTacToe-
+# Unbeatable TicTacToe
 Tic Tac Toe unbeatable game
 
 The game is implemented in Go lang, so to run the test suites
