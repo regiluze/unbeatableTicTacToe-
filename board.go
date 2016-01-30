@@ -10,7 +10,6 @@ const (
 	CROSS       = "X"
 	UNTYPED     = ""
 	EMPTY_SPACE = "-"
-	NOT_INLINE  = ""
 	SIZE        = 3
 )
 
@@ -161,7 +160,7 @@ func (board *TicTacToeBoard) placeIsFilled(position Position) bool {
 }
 
 func (board BoardSnapshot) Print() {
-	fmt.Print("  | ")
+	fmt.Print("   | ")
 	for row := 0; row < SIZE; row++ {
 		fmt.Print(row, " | ")
 	}
