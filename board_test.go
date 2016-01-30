@@ -11,12 +11,12 @@ const ()
 
 var _ = Describe("Unbeatable TicTacToe game board specs", func() {
 	var (
-		board              *TicTacToeBoard
+		board              *TokensBoard
 		irrelevantPosition Position
 	)
 
 	BeforeEach(func() {
-		board = NewTicTacToeBoard()
+		board = NewTokensBoard()
 		irrelevantPosition = Position{Col: 0, Line: 0}
 	})
 
@@ -175,7 +175,7 @@ var _ = Describe("Unbeatable TicTacToe game board specs", func() {
 	})
 })
 
-func fillAllBoard(board *TicTacToeBoard) {
+func fillAllBoard(board *TokensBoard) {
 	token := CROSS
 	for row := 0; row < 3; row++ {
 		if row == 1 {

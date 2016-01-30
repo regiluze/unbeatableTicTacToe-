@@ -1,9 +1,5 @@
 package unbeatable
 
-import (
-	_ "fmt"
-)
-
 type putToken func(Position) (BoardSnapshot, error)
 
 type Player interface {
@@ -13,20 +9,19 @@ type Player interface {
 type TicTacToeGame struct {
 	player1   Player
 	player2   Player
-	board     *TicTacToeBoard
+	board     *TokensBoard
 	winnerMap map[string]string
 }
 
 func NewTicTacToeGame(player1 Player, player2 Player) TicTacToeGame {
-	board := NewTicTacToeBoard()
+	board := NewTokensBoard()
 	winnerMap := map[string]string{
-		CROSS:  "player 1",
-		NOUGHT: "player 2",
-		"":     "Draw",
+		CROSS:   "player 1",
+		NOUGHT:  "player 2",
+		UNTYPED: "Draw",
 	}
 	game := TicTacToeGame{player1, player2, board, winnerMap}
 	return game
-
 }
 
 func (game TicTacToeGame) Start() (string, BoardSnapshot) {

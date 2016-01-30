@@ -1,9 +1,5 @@
 package unbeatable
 
-import (
-	_ "fmt"
-)
-
 const (
 	INVALID_POSITION = -1
 )
@@ -41,8 +37,8 @@ func (player UnbeatablePlayer) defaultRule(snapshot BoardSnapshot) Position {
 }
 
 func (player UnbeatablePlayer) firstFreeSpacePosition(snapshot BoardSnapshot) Position {
-	for row := 0; row < 3; row++ {
-		for column := 0; column < 3; column++ {
+	for row := 0; row < SIZE; row++ {
+		for column := 0; column < SIZE; column++ {
 			if snapshot[row][column] == EMPTY_SPACE {
 				return Position{row, column}
 			}
@@ -95,7 +91,7 @@ func (r Rules) checkColumnsToSave(snapshot BoardSnapshot) (bool, Position) {
 
 func (r Rules) checkColumns(snapshot BoardSnapshot, matchFunc func(string) bool) (bool, Position) {
 	for column, _ := range snapshot {
-		columnLine := BoardLine{snapshot[0][column], snapshot[1][column], snapshot[2][column]}
+		columnLine := snapshot.ExtractColumn(column)
 		if match, position := r.checkLineToMatch(columnLine, matchFunc); match {
 			return true, Position{position, column}
 		}
@@ -112,8 +108,7 @@ func (r Rules) checkFirstCrossLineToSave(snapshot BoardSnapshot) (bool, Position
 }
 
 func (r Rules) checkFirstCrossLine(snapshot BoardSnapshot, matchFunc func(string) bool) (bool, Position) {
-	crossLine := BoardLine{snapshot[0][0], snapshot[1][1], snapshot[2][2]}
-	if match, position := r.checkLineToMatch(crossLine, matchFunc); match {
+	if match, position := r.checkLineToMatch(snapshot.ExtractFirstCrossline(), matchFunc); match {
 		return true, Position{position, position}
 	}
 	return false, Position{}
@@ -128,8 +123,7 @@ func (r Rules) checkSecondCrossLineToSave(snapshot BoardSnapshot) (bool, Positio
 }
 
 func (r Rules) checkSecondCrossLine(snapshot BoardSnapshot, matchFunc func(string) bool) (bool, Position) {
-	crossLine := BoardLine{snapshot[0][2], snapshot[1][1], snapshot[2][0]}
-	if match, position := r.checkLineToMatch(crossLine, matchFunc); match {
+	if match, position := r.checkLineToMatch(snapshot.ExtractSecondCrossline(), matchFunc); match {
 		return true, Position{position, 2 - position}
 	}
 	return false, Position{}
@@ -137,7 +131,7 @@ func (r Rules) checkSecondCrossLine(snapshot BoardSnapshot, matchFunc func(strin
 
 func (r Rules) initRule(snapshot BoardSnapshot) (bool, Position) {
 	for _, row := range snapshot {
-		if matchNumber := r.filter(row, r.emptySpaces); matchNumber != 3 {
+		if matchNumber := r.filter(row, r.emptySpaces); matchNumber != SIZE {
 			return false, Position{0, 0}
 		}
 	}
@@ -145,7 +139,7 @@ func (r Rules) initRule(snapshot BoardSnapshot) (bool, Position) {
 }
 
 func (r Rules) checkLineToMatch(row BoardLine, matchFunc func(string) bool) (bool, int) {
-	if r.filter(row, matchFunc) == 2 {
+	if r.filter(row, matchFunc) == SIZE-1 {
 		position := r.getEmtySpacePosition(row)
 		return position != INVALID_POSITION, position
 	}

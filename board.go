@@ -28,135 +28,28 @@ func (board *BoardSnapshot) Reset() {
 	}
 }
 
-type Position struct {
-	Col  int
-	Line int
-}
-
-type TicTacToeBoard struct {
-	Snapshot       BoardSnapshot
-	numberOfTokens int
-}
-
-func NewTicTacToeBoard() *TicTacToeBoard {
-	board := &TicTacToeBoard{}
-	board.Reset()
-	return board
-}
-
-func (board *TicTacToeBoard) PutNought(position Position) (BoardSnapshot, error) {
-	return board.putToken(NOUGHT, position)
-}
-
-func (board *TicTacToeBoard) PutCross(position Position) (BoardSnapshot, error) {
-	return board.putToken(CROSS, position)
-}
-
-func (board *TicTacToeBoard) Reset() {
-	board.numberOfTokens = 0
-	board.Snapshot.Reset()
-}
-
-func (board *TicTacToeBoard) IsFull() bool {
-	if board.numberOfTokens == SIZE*SIZE {
-		return true
-	}
-	return false
-}
-
-func (board *TicTacToeBoard) IsAnyInLine() (bool, Token) {
-	token := board.checkInline()
-	match := token.Type != UNTYPED
-	return match, token
-}
-
-func (board *TicTacToeBoard) putToken(token string, position Position) (BoardSnapshot, error) {
-	if board.placeIsFilled(position) {
-		return BoardSnapshot{}, errors.New("Place already filled")
-	}
-	board.Snapshot[position.Col][position.Line] = token
-	board.numberOfTokens += 1
-	return board.Snapshot, nil
-}
-
-func (board *TicTacToeBoard) checkInline() Token {
-	if token, exists := board.inlineOnRows(); exists {
-		return token
-	}
-	if token, exists := board.inlineOnColumns(); exists {
-		return token
-	}
-	if token, exists := board.inlineOnCrosses(); exists {
-		return token
-	}
-	return Token{Type: UNTYPED}
-}
-
-func (board *TicTacToeBoard) inlineOnRows() (Token, bool) {
-	for row := 0; row < SIZE; row++ {
-		if tokenType := board.isInline(board.Snapshot[row]); tokenType != UNTYPED {
-			return Token{Type: tokenType}, true
-		}
-	}
-	return Token{Type: UNTYPED}, false
-}
-
-func (board *TicTacToeBoard) inlineOnColumns() (Token, bool) {
-	for column := 0; column < SIZE; column++ {
-		tokensLine := board.extractColumn(column)
-		if tokenType := board.isInline(tokensLine); tokenType != UNTYPED {
-			return Token{Type: tokenType}, true
-		}
-	}
-	return Token{Type: UNTYPED}, false
-}
-
-func (board *TicTacToeBoard) extractColumn(columnIndex int) BoardLine {
+func (board *BoardSnapshot) ExtractColumn(columnIndex int) BoardLine {
 	column := BoardLine{}
 	for rowIndex := 0; rowIndex < SIZE; rowIndex++ {
-		column[rowIndex] = board.Snapshot[rowIndex][columnIndex]
+		column[rowIndex] = board[rowIndex][columnIndex]
 	}
 	return column
 }
 
-func (board *TicTacToeBoard) inlineOnCrosses() (Token, bool) {
-	if tokenType := board.isInline(board.extractFirstCrossline()); tokenType != UNTYPED {
-		return Token{Type: tokenType}, true
-	}
-	if tokenType := board.isInline(board.extractSecondCrossline()); tokenType != UNTYPED {
-		return Token{Type: tokenType}, true
-	}
-	return Token{Type: UNTYPED}, false
-}
-
-func (board *TicTacToeBoard) extractFirstCrossline() BoardLine {
+func (board *BoardSnapshot) ExtractFirstCrossline() BoardLine {
 	column := BoardLine{}
 	for rowIndex := 0; rowIndex < SIZE; rowIndex++ {
-		column[rowIndex] = board.Snapshot[rowIndex][rowIndex]
+		column[rowIndex] = board[rowIndex][rowIndex]
 	}
 	return column
 }
 
-func (board *TicTacToeBoard) extractSecondCrossline() BoardLine {
+func (board *BoardSnapshot) ExtractSecondCrossline() BoardLine {
 	crossLine := BoardLine{}
 	for rowIndex := 0; rowIndex < SIZE; rowIndex++ {
-		crossLine[rowIndex] = board.Snapshot[rowIndex][SIZE-rowIndex-1]
+		crossLine[rowIndex] = board[rowIndex][SIZE-rowIndex-1]
 	}
 	return crossLine
-}
-
-func (board *TicTacToeBoard) isInline(row BoardLine) string {
-	baseTokenType := row[0]
-	for _, t := range row {
-		if t == EMPTY_SPACE || t != baseTokenType {
-			return UNTYPED
-		}
-	}
-	return baseTokenType
-}
-
-func (board *TicTacToeBoard) placeIsFilled(position Position) bool {
-	return board.Snapshot[position.Col][position.Line] != EMPTY_SPACE
 }
 
 func (board BoardSnapshot) Print() {
@@ -178,4 +71,111 @@ func (board BoardSnapshot) Print() {
 		fmt.Println("")
 		fmt.Println("----------------")
 	}
+}
+
+type Position struct {
+	Col  int
+	Line int
+}
+
+type TokensBoard struct {
+	Snapshot       BoardSnapshot
+	numberOfTokens int
+}
+
+func NewTokensBoard() *TokensBoard {
+	board := &TokensBoard{}
+	board.Reset()
+	return board
+}
+
+func (t *TokensBoard) PutNought(position Position) (BoardSnapshot, error) {
+	return t.putToken(NOUGHT, position)
+}
+
+func (t *TokensBoard) PutCross(position Position) (BoardSnapshot, error) {
+	return t.putToken(CROSS, position)
+}
+
+func (t *TokensBoard) Reset() {
+	t.numberOfTokens = 0
+	t.Snapshot.Reset()
+}
+
+func (t *TokensBoard) IsFull() bool {
+	if t.numberOfTokens == SIZE*SIZE {
+		return true
+	}
+	return false
+}
+
+func (t *TokensBoard) IsAnyInLine() (bool, Token) {
+	token := t.checkInline()
+	match := token.Type != UNTYPED
+	return match, token
+}
+
+func (t *TokensBoard) putToken(token string, position Position) (BoardSnapshot, error) {
+	if t.placeIsFilled(position) {
+		return BoardSnapshot{}, errors.New("Place already filled")
+	}
+	t.Snapshot[position.Col][position.Line] = token
+	t.numberOfTokens += 1
+	return t.Snapshot, nil
+}
+
+func (t *TokensBoard) checkInline() Token {
+	if token, exists := t.inlineOnRows(); exists {
+		return token
+	}
+	if token, exists := t.inlineOnColumns(); exists {
+		return token
+	}
+	if token, exists := t.inlineOnCrosses(); exists {
+		return token
+	}
+	return Token{Type: UNTYPED}
+}
+
+func (t *TokensBoard) inlineOnRows() (Token, bool) {
+	for row := 0; row < SIZE; row++ {
+		if tokenType := t.isInline(t.Snapshot[row]); tokenType != UNTYPED {
+			return Token{Type: tokenType}, true
+		}
+	}
+	return Token{Type: UNTYPED}, false
+}
+
+func (t *TokensBoard) inlineOnColumns() (Token, bool) {
+	for column := 0; column < SIZE; column++ {
+		tokensLine := t.Snapshot.ExtractColumn(column)
+		if tokenType := t.isInline(tokensLine); tokenType != UNTYPED {
+			return Token{Type: tokenType}, true
+		}
+	}
+	return Token{Type: UNTYPED}, false
+}
+
+func (t *TokensBoard) inlineOnCrosses() (Token, bool) {
+	if tokenType := t.isInline(t.Snapshot.ExtractFirstCrossline()); tokenType != UNTYPED {
+		return Token{Type: tokenType}, true
+	}
+	if tokenType := t.isInline(t.Snapshot.ExtractSecondCrossline()); tokenType != UNTYPED {
+		return Token{Type: tokenType}, true
+	}
+	return Token{Type: UNTYPED}, false
+}
+
+func (t *TokensBoard) isInline(row BoardLine) string {
+	baseTokenType := row[0]
+	for _, t := range row {
+		if t == EMPTY_SPACE || t != baseTokenType {
+			return UNTYPED
+		}
+	}
+	return baseTokenType
+}
+
+func (t *TokensBoard) placeIsFilled(position Position) bool {
+	return t.Snapshot[position.Col][position.Line] != EMPTY_SPACE
 }
