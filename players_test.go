@@ -20,7 +20,6 @@ var _ = Describe("Tic Tac Toe unbeatable player specs", func() {
 		player = NewUnbeateablePlayer(rules)
 		snapshot = BoardSnapshot{}
 		snapshot.Reset()
-		snapshot.Print()
 	})
 
 	Describe("when the player is trying to win the game", func() {

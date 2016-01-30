@@ -4,6 +4,10 @@ import (
 	_ "fmt"
 )
 
+const (
+	INVALID_POSITION = -1
+)
+
 type UnbeatablePlayer struct {
 	rules Rules
 }
@@ -143,7 +147,7 @@ func (r Rules) initRule(snapshot BoardSnapshot) (bool, Position) {
 func (r Rules) checkLineToMatch(row BoardLine, matchFunc func(string) bool) (bool, int) {
 	if r.filter(row, matchFunc) == 2 {
 		position := r.getEmtySpacePosition(row)
-		return position != -1, position
+		return position != INVALID_POSITION, position
 	}
 	return false, 0
 }
@@ -159,7 +163,7 @@ func (r Rules) filter(row BoardLine, matchFunc func(string) bool) int {
 }
 
 func (r Rules) getEmtySpacePosition(row BoardLine) int {
-	position := -1
+	position := INVALID_POSITION
 	for i, token := range row {
 		if token == EMPTY_SPACE {
 			position = i
